@@ -64,11 +64,11 @@ export default function Page() {
   const verify = async () => {
     if (isValid()) {
       delete userDetails._id
-      const res = await postApi('/signup', userDetails)      
+      const res = await postApi('/signup', userDetails)
       if (res.status == 401) {
         dispatch({ type: "SHOWSIGNUPMODAL", payload: false })
         dispatch({ type: "LOGINDATA", payload: userDetails })
-        localStorage.setItem('loginData', JSON.stringify(userDetails))        
+        localStorage.setItem('loginData', JSON.stringify(userDetails))
         swal({
           title: "Congratulation!",
           text: "You have updated your profile successfully!",
@@ -81,6 +81,16 @@ export default function Page() {
   const setUserData = (value, type) => {
     Object.assign(userDetails, { [type]: value });
     dispatch({ type: "USERDETAILS", payload: userDetails })
+  }
+
+  const fileUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('profileImg', file);
+    const response = await postApi('/image-upload', {formData})
+    if(response && response.data){
+      userDetails.profilePic = response.data
+      dispatch({ type: "USERDETAILS", payload: userDetails })
+    }
   }
   return (
     <div className='container'>
@@ -119,6 +129,20 @@ export default function Page() {
                   label="Last name"
                   variant="bordered"
                 />
+              </div>
+            </div>
+            <div className="row" style={{ margin: "20px 0px" }}>
+              <div className="col-md-6">
+                <div>
+                  <span style={{ fontSize: "12px" }}>Adhar Card</span>
+                  <input onChange={(e) => fileUpload(e.target.files[0], 'adharCard')} className='form-control' type="file" />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div>
+                  <span style={{ fontSize: "12px" }}>Driving Licence</span>
+                  <input className='form-control'  type="file" onChange={(e) => fileUpload(e.target.files[0], 'drivingLincence')} />
+                </div>
               </div>
             </div>
             <div style={{ margin: "20px 0px" }}>

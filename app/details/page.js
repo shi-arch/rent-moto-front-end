@@ -43,7 +43,6 @@ export default function Page() {
     let endDateHours = moment(endDate).add(endTimeHours, 'hours')
     var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
     setHours((estHours / 3600000).toFixed())
-    debugger
     let loginStr = loginData[0]
     let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id 
     setInvoice(str)

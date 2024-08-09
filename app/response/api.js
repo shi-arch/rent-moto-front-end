@@ -18,17 +18,22 @@ export const getApi = async (url, token) => {
 };
 
 export const postApi = async (url, data, token) => {
-  const headers = {
+  let headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
+  if(data.formData){
+    headers = {
+      'Content-Type': 'multipart/form-data'
+    }
+  }
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
     headers["token"] = `${token}`;
   }
   const response = await axios.post(
     baseUrl + "/api" + url,
-    data,
+    data?.formData ? data?.formData : data,
     { headers }
   );
   return response.data;

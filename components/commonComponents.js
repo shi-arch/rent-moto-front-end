@@ -316,7 +316,7 @@ export const DateSelection = (props) => {
             minDate={new Date()}
             //errorMessage={'Please select valid date'}
             // isValidDate={true}
-            customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('D MMM, YYYY')} />}
+            customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('DD MMM, YYYY')} />}
         />
     )
 }
@@ -335,7 +335,7 @@ const CustomInput = ({ value, onClick, label, isBold }) => {
                 <button className="custom-input" style={{ fontWeight: '400', fontSize: '15px', color: "#797982" }}>
                     {value}
                 </button>
-                <div style={{ marginLeft: '128px' }}>
+                <div style={{ marginLeft: '120px' }}>
                     <DateIcon />
                 </div>
             </div>
