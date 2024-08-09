@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = 'http://localhost:8080'
+const baseUrl = 'https://rent-moto-back-end-git-main-shivrams-projects-c1cb6bf5.vercel.app/'
 
 export const getApi = async (url, token) => {
   const headers = {
