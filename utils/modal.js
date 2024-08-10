@@ -46,7 +46,7 @@ export const CitiesModal = (props) => {
                   {
                     citiesData.map((o) => (
                       <div className="col-md-3" key={o.myLocation} style={{ margin: "0px", marginBottom: "15px", cursor: 'pointer' }}>
-                        <img alt="Cute puppy" role="button" tabIndex="0" onClick={() => goToDashboard(o)} src={o.url} width={150} height={150} />
+                        <img alt="City picture" role="button" tabIndex="0" onClick={() => goToDashboard(o)} src={o.url} width={150} height={150} />
                         <span>{o.myLocation}</span>
                       </div>
                     ))

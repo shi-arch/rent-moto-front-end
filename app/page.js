@@ -122,7 +122,7 @@ export default function Home() {
         <div className="col-md-6">
           <img
             src={selectedCity?.url}
-            alt="Picture of the author"
+            alt="Picture of the selected city"
             width={'100%'}
             height={'100%'}
           />
