@@ -140,7 +140,7 @@ export default function Page() {
             <CardBody>
               <div className='row'>
                 <div className='col-md-3'>
-                  <img src={url} alt="" />
+                  <img src={url} alt="Cute puppy" />
                   {/* <img src="https://rentelo-production.s3.ap-south-1.amazonaws.com/models/1696756205440-000000-Honda-cliq-rentelo-limited-offer.png" alt="" /> */}
                 </div>
                 <div className='col-md-6'>

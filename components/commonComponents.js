@@ -38,12 +38,12 @@ export const BikeCard = (props) => {
                 
             </CardHeader>
             <CardBody>
-                <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="" />
+                <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="Cute puppy" />
                 <div className="row" style={{ marginTop: "14px" }}>
                     <div className="col-md-8" style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
                     <div className="col-md-4" style={{ textAlign: "right", fontSize: "14px" }}>₹{pricePerday}/day</div>
                 </div>
-                <span style={{ marginTop: "14px", display: "flex" }}><img src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
+                <span style={{ marginTop: "14px", display: "flex" }}><img alt="Cute puppy" src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
                 <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
                 <hr style={{ marginTop: "14px 0px" }} />
                 <div className="row">
