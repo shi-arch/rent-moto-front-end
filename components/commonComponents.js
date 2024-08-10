@@ -80,7 +80,7 @@ export const SelectTimer = () => {
                         if (time1 < time2) {
                             isDisabled = true
                         }
-                        return <option disabled={isDisabled} value={ele}>{ele}</option>
+                        return <option key={ele} disabled={isDisabled} value={ele}>{ele}</option>
                     })
                 }
             </select>
@@ -208,7 +208,7 @@ const DropDown = () => {
             }} name="cars" id="cars">
                 {
                     subLocations && subLocations.length ? subLocations.map((o) => (
-                        <option value={o.value}>{o.label}</option>
+                        <option key={o.value} value={o.value}>{o.label}</option>
                     )) : ""
                 }
             </select>

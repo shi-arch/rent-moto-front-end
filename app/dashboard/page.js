@@ -78,7 +78,7 @@ export default function Page() {
                 <div className='row'>
                   {
                     categories.map((ele) => (
-                      <div className='col-md-6' style={{ marginBottom: "15px" }}>
+                      <div className='col-md-6' key={ele.name} style={{ marginBottom: "15px" }}>
                         <div onClick={() => setFilter(ele.name)} className={filterData == ele.name ? "filter" : ""} style={{ border: '1px solid #d3d3da', borderRadius: "10px", textAlign: "center", padding: "22px 0px", cursor: "pointer", height: "100px" }}>
                           <img style={ele.name == "Scooty" ? { width: "41%", margin: "0px auto" } : { width: "60%", margin: "0px auto" }} src={ele.url} alt="" />
                           <span style={{ fontSize: "14px", fontWeight: "700" }}>{ele.name}</span>
@@ -108,7 +108,7 @@ export default function Page() {
                 }} name="cars" id="brands">
                   {
                     brands.map((o) => (
-                      <option value={o.key}>{o.label}</option>
+                      <option key={o.label} value={o.key}>{o.label}</option>
                     ))
                   }
                 </select>
@@ -125,7 +125,7 @@ export default function Page() {
                 }}>
                   {
                     sortArr.map((o) => (
-                      <option value={o.key}>{o.label}</option>
+                      <option key={o.label} value={o.key}>{o.label}</option>
                     ))
                   }
                 </select>
@@ -151,7 +151,7 @@ export default function Page() {
             {
               data && data.length ? data.map((card, index) => {
                 const finalCharge = card.pricePerday * .18 + parseInt(card.pricePerday)
-                return <div className='col-md-4'>
+                return <div key={index} className='col-md-4'>
                   <div style={{ marginTop: "20px", textAlign: "center" }}>
                     <BikeCard key={index} {...card} finalCharge={finalCharge} />
                   </div>
