@@ -331,7 +331,7 @@ const CustomInput = ({ value, onClick, label, isBold }) => {
     return (
         <div style={{cursor: 'pointer', padding: "5px 0px", border: "2px solid rgb(225 225 245)", borderRadius: "10px", boxShadow: "var(--bs-box-shadow-sm) !important"}}>
             <span style={styleObj}>{label}</span>
-            <div onClick={onClick} className="custom-input d-flex align-items-center container" >
+            <div role="button" tabIndex="0" onClick={onClick} className="custom-input d-flex align-items-center container" >
                 <button className="custom-input" style={{ fontWeight: '400', fontSize: '15px', color: "#797982" }}>
                     {value}
                 </button>

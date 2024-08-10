@@ -123,7 +123,7 @@ export default function Page() {
               <div className='row'>
                 <div className='col-md-6'>
                   <div style={{ display: "flex" }}>
-                    <div onClick={() => {
+                    <div role="button" tabIndex="0" onClick={() => {
                       router.push('/dashboard')
                     }} style={{ margin: "8px 5px 0px 0px", cursor: "pointer" }}>
                       <BackIcon />

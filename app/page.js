@@ -136,7 +136,7 @@ export default function Home() {
 const CustomInput = ({ value, onClick, label }) => (
   <div style={{ cursor: 'pointer', padding: "5px 0px", border: "2px solid rgb(225 225 245)", borderRadius: "10px", boxShadow: "var(--bs-box-shadow-sm) !important" }}>
     <span style={{ display: 'block', fontSize: '13px', fontWeight: '400', marginLeft: '12px', fontWeight: "bold" }}>{label}</span>
-    <div onClick={onClick} className="custom-input d-flex align-items-center container" >
+    <div onClick={onClick} tabIndex="0" role="button" className="custom-input d-flex align-items-center container" >
       <button className="custom-input" style={{ fontWeight: '400', fontSize: '15px', color: "#797982" }}>
         {value}
       </button>

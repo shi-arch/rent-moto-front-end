@@ -72,7 +72,7 @@ export const NavigationBar = () => {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <div onClick={() => dispatch({ type: "CITIESTMODAL", payload: true })} style={{ border: '2.5px solid white', borderRadius: '10px', cursor: 'pointer', marginTop: '5px' }} className="w-full flex flex-col items-start gap-4">
+            <div role="button" tabIndex="0" onClick={() => dispatch({ type: "CITIESTMODAL", payload: true })} style={{ border: '2.5px solid white', borderRadius: '10px', cursor: 'pointer', marginTop: '5px' }} className="w-full flex flex-col items-start gap-4">
               <div style={{ display: 'flex', padding: '3px 0px 4px 16px', marginTop: '6px' }}>
                 <span style={{ marginBottom: "5px", fontWeight: "700", color: "white" }}>{selectedCity?.myLocation}</span>
                 <div style={{ padding: "0px 10px" }}>
