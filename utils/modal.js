@@ -10,7 +10,7 @@ import { Checkbox } from "@nextui-org/checkbox";
 import { Image } from "@nextui-org/image";
 import { useDispatch, useSelector } from "react-redux";
 import { postApi } from "../app/response/api";
-import { RadioGroup, Radio } from "@nextui-org/react";
+import { RadioGroup, Radio } from "@nextui-org/radio";
 import { mobilePattern, validateEmail } from "./constants";
 import swal from 'sweetalert';
 
