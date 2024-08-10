@@ -55,7 +55,7 @@ export const BikeCard = (props) => {
                                     dispatch({ type: "SELECTEDVEHICLE", payload: props })
                                     dispatch({ type: "TRIGGERAPI", payload: false })
                                     router.push('/details')
-                                }} type="submit" disabled={vehicleCount == 0 ? true : false || !selectedLocality} class="btn btn-success btn-block form-control">Rent Now</button> :
+                                }} type="submit" disabled={vehicleCount == 0 ? true : false || !selectedLocality} className="btn btn-success btn-block form-control">Rent Now</button> :
                                 ""
                         }
                     </div>

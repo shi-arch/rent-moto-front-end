@@ -111,10 +111,10 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <p>Duration: 1 Day</p>
                 </div>
-                <button style={{ width: '100%', background: 'black' }} onClick={search} type="submit" class="btn btn-success btn-block form-control">Search</button>
+                <button style={{ width: '100%', background: 'black' }} onClick={search} type="submit" className="btn btn-success btn-block form-control">Search</button>
               </div> : ""
           }
 

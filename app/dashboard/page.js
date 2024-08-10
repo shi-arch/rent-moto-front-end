@@ -142,7 +142,7 @@ export default function Page() {
                 }} style={{ padding: "11px" }} placeholder="Search by name" />
               </CardBody>
             </Card>
-            <button style={{ width: '100%', margin: "20px 0px", background: "#e03546", border: "none" }} onClick={() => filter('clear')} type="submit" class="btn btn-success btn-block form-control">Reset filter</button>
+            <button style={{ width: '100%', margin: "20px 0px", background: "#e03546", border: "none" }} onClick={() => filter('clear')} type="submit" className="btn btn-success btn-block form-control">Reset filter</button>
           </div>
 
         </div>

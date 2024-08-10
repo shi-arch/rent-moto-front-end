@@ -275,7 +275,7 @@ export default function Page() {
               </div>
             </CardBody>
           </Card>
-          <button disabled={!ageCheck || !licenceCheck} style={{ width: '100%', background: 'black', marginBottom: "50px" }} onClick={payNow} type="submit" class="btn btn-success btn-block form-control">Pay Now</button>
+          <button disabled={!ageCheck || !licenceCheck} style={{ width: '100%', background: 'black', marginBottom: "50px" }} onClick={payNow} type="submit" className="btn btn-success btn-block form-control">Pay Now</button>
         </div>
       </div>
     </div>
