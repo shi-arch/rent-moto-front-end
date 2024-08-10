@@ -69,7 +69,7 @@ export const BikeCard = (props) => {
 export const SelectTimer = () => {
     return (
         <div>
-            <div><label>Start Time</label></div>
+            <div><label htmlFor="name">Start Time</label></div>
             <select onChange={() => { }}>
                 {
                     TimeRangeArr.map((ele) => {

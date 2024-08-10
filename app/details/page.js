@@ -153,7 +153,7 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <p style={{ display: "flex" }}><LocateIcon />  <label>Pickup location</label></p>
+                  <p style={{ display: "flex" }}><LocateIcon />  <label htmlFor="name">Pickup location</label></p>
                   <p style={{ marginTop: "-15px", fontWeight: "bold", marginLeft: "40px", fontSize: "14px" }}>{selectedLocality}</p>
                   <div className='row'>
                     <div className='col-md-5' style={{ maxWidth: "fit-content" }}>
@@ -183,17 +183,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ display: "flex", marginTop: "10px", marginBottom: "10px" }}>
-                    <ClockIcon />  <label style={{ marginLeft: "15px" }}>Total booking duration in <span style={{ fontWeight: "bold" }}>{hours} Hours</span></label>
+                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration in <span style={{ fontWeight: "bold" }}>{hours} Hours</span></label>
                   </div>
                   <div style={{ display: "flex" }}>
-                    <RouteIcon />  <label>Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>
+                    <RouteIcon />  <label htmlFor="name">Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>
                   </div>
-                  <p style={{ marginTop: "15px" }}>Vehicle number  <label style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
-                  {/* <p>Pick up time:  <label>{startTime.hours + " : " + startTime.minutes}</label></p>
-                  <p>Drop date:  <label>{endDate}</label></p>
-                  <p>Drop time:  <label>{endTime.hours + " : " + endTime.minutes}</label></p>
-                  <p>Vehicle number:  <label>{vehicleNumber}</label></p>
-                  <p>Total breaking hours:  <label>30 Hours</label></p> */}
+                  <p style={{ marginTop: "15px" }}>Vehicle number  <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
                 </div>
                 <div className='col-md-3' style={{ textAlign: "right" }}>
                   <h5>₹ {pricePerday}</h5>
@@ -214,14 +209,14 @@ export default function Page() {
             </CardHeader>
             <hr />
             <CardBody>
-              <p>Vehicle Rental Cost <label style={{ float: "right" }}>₹ {pricePerday}</label></p>
-              <p>Total Booking Amount <label style={{ float: "right" }}>₹ {pricePerday}</label></p>
-              <p>CGST (14% applied) <label style={{ float: "right" }}>₹ {cgst}</label></p>
-              <p>SGST (14% applied) <label style={{ float: "right" }}>₹ {cgst}</label></p>
+              <p>Vehicle Rental Cost <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
+              <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
+              <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
+              <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
             </CardBody>
             <hr />
             <CardFooter style={{ display: "block" }}>
-              <p style={{ marginBottom: "40px" }}>Payable Amount <label style={{ float: "right" }}>₹ {totalAmount}</label></p>
+              <p style={{ marginBottom: "40px" }}>Payable Amount <label htmlFor="name" style={{ float: "right" }}>₹ {totalAmount}</label></p>
               <div style={{ background: "#ffeccc", margin: "-16px", padding: "13px" }}>
                 <div style={{ marginBottom: "20px" }}>
                   <div style={{ display: "flex" }}>

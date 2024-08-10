@@ -48,11 +48,11 @@ export default function Page() {
               </div>
             </div>
             <div style={{ textAlign: 'center', margin: '20px 0px' }}><h5>Order Details</h5></div>
-            <p><span style={{ fontWeight: '700' }}> Order Number</span> <label style={{ float: "right" }}>{_id}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Total Booking Amount</span> <label style={{ float: "right" }}>{amount}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Payment Method</span> <label style={{ float: "right" }}>{paymentMethod}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Payment Status</span> <label style={{ float: "right" }}>{paymentMethod == "Online" ? "Completed" : "Pending"}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Location</span> <label style={{ float: "right" }}>{myLocation + ", " + selectedLocality}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Order Number</span> <label htmlFor="name" style={{ float: "right" }}>{_id}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Total Booking Amount</span> <label htmlFor="name" style={{ float: "right" }}>{amount}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Payment Method</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Payment Status</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod == "Online" ? "Completed" : "Pending"}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Location</span> <label htmlFor="name" style={{ float: "right" }}>{myLocation + ", " + selectedLocality}</label></p>
           </CardBody>
         </Card>
       </div>
