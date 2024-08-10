@@ -11,7 +11,6 @@ import { ClockIcon } from '@mui/x-date-pickers';
 import moment from 'moment';
 import swal from 'sweetalert';
 import { Loading } from '../../components/commonComponents';
-import { Checkbox } from "@nextui-org/react";
 import { Input } from '@nextui-org/input';
 import { PaymentModal } from '../../utils/modal';
 
