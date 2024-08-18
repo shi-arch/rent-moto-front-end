@@ -10,6 +10,8 @@ import { fontSans } from "@/config/fonts";
 import { NavigationBar } from "@/components/navbar";
 import Footer from "../components/footer";
 import { Providers } from "@/app/providers";
+import Header from "@/components/header";
+import "./layout.css"
 
 export default function RootLayout({children}) {
   return (
@@ -24,7 +26,7 @@ export default function RootLayout({children}) {
         {/* <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}> */}
         <Provider store={store}>
         <Providers themeProps={{ attribute: "class" }}>
-            <NavigationBar />
+            <Header />
             <main style={{ minHeight: "80vh" }}>
               {children}
             </main>

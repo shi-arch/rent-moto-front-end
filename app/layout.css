@@ -1,0 +1,12 @@
+.test{
+    background-color: #e03546;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    header{
+        /* background-color: #e03546; */
+        padding-left: 0px!important;
+    }
+  }
