@@ -6,6 +6,7 @@ import { Link } from "@nextui-org/link";
 import { Router, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { Caret } from "@/utils/icons";
+import { ProfileDrop } from "./commonComponents";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
