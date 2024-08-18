@@ -236,7 +236,7 @@ export const SubHeader = () => {
                                     <DateSelection isBold={true} type={'STARTDATE'} />
                                     {/* <DatePickerComponent type={'STARTDATE'} label="Pickup Date" defaultVal={startDate ? parseDate(moment(startDate).format('YYYY-MM-DD')) : null} /> */}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2 mobile-bot-space">
                                     <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
                                     {/* <TimePickerComponent type={'STARTTIME'} errType={'startTime'} label={'Start Time'} defaultVal={new Time(startTime.hours, startTime.minutes)} /> */}
                                 </div>
@@ -244,7 +244,7 @@ export const SubHeader = () => {
                                     <DateSelection isBold={true} type={'ENDDATE'} />
                                     {/* <DatePickerComponent type={'ENDDATE'} errType={'endDate'} label={'End Date'} defaultVal={endDate ? parseDate(moment(endDate).format('YYYY-MM-DD')) : null} /> */}
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2 mobile-bot-space">
                                     <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
                                 </div>
                             </div>
@@ -268,7 +268,7 @@ export const TimerSelection = (props) => {
         apiCall()
     }, [filterString])
     return (
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mobile-bot-space">
+        <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {
                 <Select
                     isInvalid={error && error.type == errType}

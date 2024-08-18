@@ -18,6 +18,9 @@
         padding-left: 0px!important;
         gap: 0px!important;
     }
+    .mobile-login{
+        padding: 21px 5px!important;
+    }
     .mobile-bot-space{
         margin-bottom: 25px
     }

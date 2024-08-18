@@ -42,13 +42,16 @@ export default function Header() {
                         <p className="font-bold text-inherit" style={{ marginTop: "16px" }}>RENTO</p>
                     </NavbarBrand>
                 </NavbarContent>
-
-                <NavbarContent className="hidden sm:flex gap-4" justify="center" style={{ marginTop: "10px" }}>
-                    <NavbarItem >
-                        Features
+                <NavbarContent className="hidden sm:flex gap-4" justify="center" style={{ marginTop: "10px", color: "white" }}>
+                    <NavbarItem>
+                        <Link style={{ color: "white", fontWeight: "bold" }} color="foreground" href="/" aria-current="page">
+                            Home
+                        </Link>
                     </NavbarItem>
-                    <NavbarItem >
-                        Integrations
+                    <NavbarItem>
+                        <Link href="/dashboard" style={{ color: "white", fontWeight: "bold" }} color="foreground" aria-current="page">
+                            Explore
+                        </Link>
                     </NavbarItem>
                     <NavbarItem>
                         <div role="button" tabIndex="0" onClick={() => dispatch({ type: "CITIESTMODAL", payload: true })} style={{ border: '2.5px solid white', borderRadius: '10px', cursor: 'pointer', marginTop: '5px' }} className="w-full flex flex-col items-start gap-4">
@@ -61,7 +64,7 @@ export default function Header() {
                         </div>
                     </NavbarItem>
                 </NavbarContent>
-                <NavbarContent justify="end" style={{ marginTop: "10px" }}>
+                <NavbarContent justify="end" style={{ marginTop: "10px", marginLeft: "0px" }}>
                     <NavbarItem>
                         <div style={{ marginTop: "6px" }}>
                             {
@@ -69,8 +72,8 @@ export default function Header() {
                                     : <Button onClick={() => {
                                         dispatch({ type: "ERROR", payload: "" })
                                         dispatch({ type: "SHOWLOGINMODEL", payload: true })
-                                    }} style={{ color: "white", background: "#e03546", padding: "21px", fontWeight: "700", border: "3px solid white" }} variant="flat">
-                                        Sign Up or Login
+                                    }} className="mobile-login" style={{ color: "white", background: "#e03546", padding: "21px", fontWeight: "700", border: "3px solid white" }} variant="flat">
+                                        Sign Up / Login
                                     </Button>
                             }
                         </div>
