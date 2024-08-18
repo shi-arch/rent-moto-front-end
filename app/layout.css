@@ -2,6 +2,14 @@
     background-color: #e03546;
 }
 
+.react-datepicker-wrapper{
+    width: 100%;
+}
+
+.transition-background{
+    max-width: 100%;
+}
+
 
 
 @media only screen and (max-width: 600px) {
@@ -9,4 +17,12 @@
         /* background-color: #e03546; */
         padding-left: 0px!important;
     }
+    .mobile-bot-space{
+        margin-bottom: 25px
+    }
+    .mobile-padding{
+        padding: 12px 12px 13px 32px!important;
+    }
   }
+
+  

@@ -84,7 +84,7 @@ export const NavigationBar = () => {
         </NavbarContent>
         <NavbarContent justify="end" style={{ marginTop: "10px" }}>
           <NavbarItem>
-            <div style={{marginTop: "6px", marginRight: "40px", }}>
+            <div style={{marginTop: "6px", marginRight: "40px" }}>
             {
               loginData && isLoggedIn ? <ProfileDrop />
               : <Button onClick={() => {
@@ -93,10 +93,8 @@ export const NavigationBar = () => {
               }} style={{ color: "white", background: "#e03546", padding: "21px", fontWeight: "700", border: "3px solid white" }} variant="flat">
                 Sign Up or Login
               </Button>
-            }
-            
-            </div>
-            
+            }            
+            </div>            
           </NavbarItem>
         </NavbarContent>
         <NavbarMenu>

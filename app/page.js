@@ -86,7 +86,7 @@ export default function Home() {
           }
           {
             startTime && endTime && disabledKeys ?
-              <div style={{ padding: "60px 61px 90px 117px", fontWeight: "bold" }}>
+              <div className="mobile-padding" style={{ padding: "60px 61px 90px 117px", fontWeight: "bold" }}>
                 <p style={{ fontSize: "30px" }}>Commuting Made <span style={{ color: '#e03546' }}>Easy</span>,</p>
                 <p style={{ fontSize: "30px" }}><span style={{ color: '#e03546' }}>Affordable</span> and <span style={{ color: '#e03546' }}>Quick</span></p>
                 <p style={{ fontSize: "20px" }}>Scooter/Scooty/Bike on Rent in Bangalore</p>
@@ -96,7 +96,6 @@ export default function Home() {
                   <div className='row'>
                     <div className='col-md-6'>
                       <DateSelection type={'STARTDATE'} />
-                      {/* <DatePickerComponent defaultVal={today(getLocalTimeZone())} type={'STARTDATE'} errType={'startDate'} label={'Start Date'} /> */}
                     </div>
                     <div className='col-md-6' style={{ alignContent: 'right' }}>
                       <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
