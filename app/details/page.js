@@ -42,11 +42,11 @@ export default function Page() {
     let endDateHours = moment(endDate).add(endTimeHours, 'hours')
     var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
     setHours((estHours / 3600000).toFixed())
-    if(loginData){
+    if (loginData) {
       let loginStr = loginData?.[0]
-      let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id 
+      let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id
       setInvoice(str)
-    }    
+    }
   }, [])
 
 
@@ -97,9 +97,7 @@ export default function Page() {
             dangerMode: true,
           })
             .then(async () => {
-              debugger
               const res = await postApi('/sendOtp', { email: loginData[0].email, invoice })
-              debugger
               router.push('/thankyou')
             });
         }
@@ -122,8 +120,8 @@ export default function Page() {
         <div className='col-md-7'>
           <Card>
             <CardHeader style={{ display: "block" }}>
-              <div className='row'>
-                <div className='col-md-6'>
+              <div style={{ display: "flex" }}>
+                <div>
                   <div style={{ display: "flex" }}>
                     <div role="button" tabIndex="0" onClick={() => {
                       router.push('/dashboard')
@@ -133,7 +131,7 @@ export default function Page() {
                     <h4>Booking Summary</h4>
                   </div>
                 </div>
-                <div className='col-md-6' style={{ textAlign: "right" }}>
+                <div style={{ marginLeft: "auto" }}>
                   <h4>Price</h4>
                 </div>
               </div>
@@ -143,22 +141,21 @@ export default function Page() {
               <div className='row'>
                 <div className='col-md-3'>
                   <img src={url} alt="Selected vehicle picture" />
-                  {/* <img src="https://rentelo-production.s3.ap-south-1.amazonaws.com/models/1696756205440-000000-Honda-cliq-rentelo-limited-offer.png" alt="" /> */}
                 </div>
                 <div className='col-md-6'>
-                  <div className='row'>
-                    <div className='col-md-9'>
+                  <div style={{ display: "flex" }}>
+                    <div>
                       <p style={{ fontWeight: "bold" }}>{name}</p>
                     </div>
-                    <div className='col-md-3'>
-                      <p><span style={{ fontWeight: "bold" }}>{vehicleCount}</span> left</p>
+                    <div style={{ marginLeft: "auto", display: "flex" }}>
+                      <span style={{ fontWeight: "bold" }}>{vehicleCount}</span> <span style={{ marginLeft: "2px" }}>Left</span>
                     </div>
+                    <h5 className="mobile-price" style={{ marginLeft: "auto", display: "none" }}>₹ {pricePerday}</h5>
                   </div>
-
-                  <p style={{ display: "flex" }}><LocateIcon />  <label htmlFor="name">Pickup location</label></p>
+                  <p style={{ display: "flex", marginLeft: "-10px" }}><LocateIcon />  <label htmlFor="name">Pickup location</label></p>
                   <p style={{ marginTop: "-15px", fontWeight: "bold", marginLeft: "40px", fontSize: "14px" }}>{selectedLocality}</p>
-                  <div className='row'>
-                    <div className='col-md-5' style={{ maxWidth: "fit-content" }}>
+                  <div style={{ display: "flex" }}>
+                    <div style={{ maxWidth: "fit-content" }}>
                       <div style={{ display: "flex", marginBottom: "10px" }}>
                         <DateIcon /> Pick-up
                       </div>
@@ -169,10 +166,10 @@ export default function Page() {
                         </CardBody>
                       </Card>
                     </div>
-                    <div className='col-md-2' style={{ textAlign: "center" }}>
+                    <div style={{ textAlign: "center", marginLeft: "auto" }}>
                       to
                     </div>
-                    <div className='col-md-5' style={{ maxWidth: "fit-content" }}>
+                    <div style={{ maxWidth: "fit-content", marginLeft: "auto" }}>
                       <div style={{ display: "flex", marginBottom: "10px" }}>
                         <DateIcon /> Drop-off
                       </div>
@@ -192,7 +189,7 @@ export default function Page() {
                   </div>
                   <p style={{ marginTop: "15px" }}>Vehicle number  <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
                 </div>
-                <div className='col-md-3' style={{ textAlign: "right" }}>
+                <div className='col-md-3 mobile-price-hide' style={{ textAlign: "right" }}>
                   <h5>₹ {pricePerday}</h5>
                 </div>
 

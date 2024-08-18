@@ -39,19 +39,19 @@ export const BikeCard = (props) => {
             </CardHeader>
             <CardBody>
                 <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="Bike picture" />
-                <div className="row" style={{ marginTop: "14px" }}>
-                    <div className="col-md-8" style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
-                    <div className="col-md-4" style={{ textAlign: "right", fontSize: "14px" }}>₹{pricePerday}/day</div>
+                <div  style={{ marginTop: "14px", display: "flex" }}>
+                    <div  style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
+                    <div  style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px"}}>₹{pricePerday}/day</div>
                 </div>
                 <span style={{ marginTop: "14px", display: "flex" }}><img alt="Svg icon" src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
                 <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
                 <hr style={{ marginTop: "14px 0px" }} />
-                <div className="row">
-                    <div className="col-md-6" style={{ fontWeight: "700" }}>₹ {finalCharge.toFixed()}</div>
-                    <div className="col-md-6" style={{ textAlign: "right" }}>
+                <div style={{display: "flex"}}>
+                    <div style={{ fontWeight: "700" }}>₹ {finalCharge.toFixed()}</div>
+                    <div style={{ marginLeft: "auto"}}>
                         {
                             vehicleCount !== 0 ?
-                                <button style={{ width: '81%', background: 'black' }} onClick={() => {
+                                <button style={{ width: '100%', background: 'black' }} onClick={() => {
                                     dispatch({ type: "SELECTEDVEHICLE", payload: props })
                                     dispatch({ type: "TRIGGERAPI", payload: false })
                                     router.push('/details')
@@ -198,7 +198,7 @@ const DropDown = () => {
 
     return (
         <>
-            <select style={{ height: "57px" }} className="form-select" defaultValue={defaultPickupLocation} onClick={async (e) => {
+            <select style={{ height: "57px" }} className="form-select mobile-bot-space" defaultValue={defaultPickupLocation} onClick={async (e) => {
                 const o = e.target.value
                 setSelectedKeys(o)
                 const filter = { ...filterString, pickupLocation: o }
@@ -227,7 +227,7 @@ export const SubHeader = () => {
             {
                 startTime ?
                     <div style={{ justifyContent: 'center', border: '1px solid #d3d3da', borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)', borderTop: 'none', borderTopLeftRadius: '0px', borderTopRightRadius: '0px' }}>
-                        <div style={{ padding: '24px' }}>
+                        <div style={{ padding: '24px' }} className="bot-space">
                             <div className="row">
                                 <div className="col-md-2">
                                     <DropDown />
@@ -268,7 +268,7 @@ export const TimerSelection = (props) => {
         apiCall()
     }, [filterString])
     return (
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mobile-bot-space">
             {
                 <Select
                     isInvalid={error && error.type == errType}

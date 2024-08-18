@@ -78,9 +78,9 @@ export default function Page() {
                 <div className='row'>
                   {
                     categories.map((ele) => (
-                      <div className='col-md-6' key={ele.name} style={{ marginBottom: "15px" }}>
+                      <div className='col-md-6 col-sm-6 col-xs-6' key={ele.name} style={{ marginBottom: "15px" }}>
                         <div tabIndex="0" role="button" onClick={() => setFilter(ele.name)} className={filterData == ele.name ? "filter" : ""} style={{ border: '1px solid #d3d3da', borderRadius: "10px", textAlign: "center", padding: "22px 0px", cursor: "pointer", height: "100px" }}>
-                          <img style={ele.name == "Scooty" ? { width: "41%", margin: "0px auto" } : { width: "60%", margin: "0px auto" }} src={ele.url} alt="Picture of my category" />
+                          <img style={ele.name == "Scooty" ? { width: "60px", margin: "0px auto" } : { width: "80px", margin: "0px auto" }} src={ele.url} alt="Picture of my category" />
                           <span style={{ fontSize: "14px", fontWeight: "700" }}>{ele.name}</span>
                         </div>
                       </div>

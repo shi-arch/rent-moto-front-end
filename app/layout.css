@@ -16,12 +16,25 @@
     header{
         /* background-color: #e03546; */
         padding-left: 0px!important;
+        gap: 0px!important;
     }
     .mobile-bot-space{
         margin-bottom: 25px
     }
     .mobile-padding{
         padding: 12px 12px 13px 32px!important;
+    }
+    .bot-space{
+        margin-bottom: -16px!important;
+    }
+    .mobile-price{
+        display: block!important;
+    }
+    .mobile-price-hide{
+        display: none;
+    }
+    .mobile-view{
+        margin: 0px!important;
     }
   }
 

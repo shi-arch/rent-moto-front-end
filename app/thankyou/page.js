@@ -24,12 +24,11 @@ export default function Page() {
   }, [])
   return (
     <div className='container'>
-      <div style={{ textAlign: 'center', margin: '29px 165px' }}>
+      <div className='mobile-view' style={{ textAlign: 'center', margin: '29px 165px' }}>
         <Card>
           <CardHeader style={{ display: "block" }}>
             <h3 style={{ color: 'green' }}>Thank you. Your booking has been confirmed.</h3>
           </CardHeader>
-          {/* <hr /> */}
           <CardBody>
             <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}>
               <div className='row'>
