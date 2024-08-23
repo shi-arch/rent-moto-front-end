@@ -32,6 +32,7 @@ const initialState = {
   defaultPrice: "Please sort type",
   vehicleName: "",
   selectedCity: "",
+  selectedKeys: "",
   defaultPickupLocation: "Please select the nearby location"
 };
 
@@ -39,6 +40,8 @@ const RootReducer = (state = initialState, action) => {
   switch (action.type) {    
     case 'PAYMENTMETHOD':
       return { ...state, paymentMethod: action.payload };
+      case 'SELECTEDKEYS':
+      return { ...state, selectedKeys: action.payload };
       case 'SHOWSIGNUPMODAL':
       return { ...state, showSignUpModel: action.payload };
     case 'DEFAULTBRAND':

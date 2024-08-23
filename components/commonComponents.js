@@ -19,7 +19,7 @@ import SoldOutGif from '../utils/images/sold-out.gif'
 import { Skeleton } from "@nextui-org/skeleton";
 import Image from 'next/image'
 import './commonComponent.css'
-import { AddNoteIcon, DateIcon, LogOut, ProfileIcon, UserIcon } from "../utils/icons";
+import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileIcon, UserIcon } from "../utils/icons";
 
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
@@ -154,12 +154,12 @@ export const ProfileDrop = () => {
                 >
                     <div style={{ cursor: 'pointer', display: 'flex', padding: '3px 0px 4px 16px', marginTop: "8px" }}>
                         <UserIcon />
-                        <span style={{ marginLeft: "8px", color: "white", fontWeight: "bold", marginTop: "6px" }}>Hi, {loginData[0]?.firstName}</span>
+                        <span style={{ marginLeft: "8px", color: "white", fontWeight: "bold", marginTop: "6px" }}>Hi, {loginData?.firstName}</span>
                     </div>
                 </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions" disabledKeys={["name"]}>
-                <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData[0]?.firstName + " " + loginData[0]?.lastName}</span></DropdownItem>
+                <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData?.firstName + " " + loginData?.lastName}</span></DropdownItem>
                 <DropdownItem onClick={() => {
                     localStorage.removeItem('loginData')                    
                     dispatch({ type: "USERDETAILS", payload: "" })
@@ -171,6 +171,9 @@ export const ProfileDrop = () => {
                 <DropdownItem onClick={() => {
                     router.push('/profile')
                 }} startContent={<ProfileIcon />} key="copy">Profile</DropdownItem>
+                <DropdownItem onClick={() => {
+                    router.push('/bookings')
+                }} startContent={<Bookingicon />} key="copy">My Bookings</DropdownItem>
                 
             </DropdownMenu>
         </Dropdown>

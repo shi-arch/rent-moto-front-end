@@ -28,7 +28,7 @@ export default function Page() {
     const data = localStorage.getItem("loginData")
     if (data) {
       let parseData = JSON.parse(data)
-      setUserDetauls(parseData[0])
+      setUserDetauls(parseData)
     }
   }, [])
 

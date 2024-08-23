@@ -43,7 +43,8 @@ export default function Page() {
     var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
     setHours((estHours / 3600000).toFixed())
     if (loginData) {
-      let loginStr = loginData?.[0]
+      debugger
+      let loginStr = loginData
       let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id
       setInvoice(str)
     }
@@ -71,8 +72,10 @@ export default function Page() {
   const makePayment = async () => {
     const isUserLoggedIn = localStorage.getItem('loginData')
     if (isUserLoggedIn) {
+      const contact = loginData.contact
       dispatch({ type: "LOADING", payload: true })
       const obj = {
+        contact,
         vehicleId,
         BookingStartDateAndTime: {
           startDate: startDate,
@@ -82,7 +85,8 @@ export default function Page() {
           endDate: endDate,
           endTime: endTime
         },
-        vehicleNumber
+        vehicleNumber,
+        bookingAmount: totalAmount
       }
       const res = await postApi('/booking', obj)
       if (res) {
@@ -97,7 +101,12 @@ export default function Page() {
             dangerMode: true,
           })
             .then(async () => {
-              const res = await postApi('/sendOtp', { email: loginData[0].email, invoice })
+              await postApi('/sendOtp', { email: loginData.email, invoice })
+              const res = await postApi('/getUsersByContact', { contact: parseInt(loginData.contact) })
+              if (res.status == 200) {
+                debugger
+                dispatch({ type: "LOGINDATA", payload: res.data })
+              }
               router.push('/thankyou')
             });
         }

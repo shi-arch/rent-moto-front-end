@@ -17,6 +17,7 @@ export default function Page() {
   const selectedCity = useSelector(state => state.selectedCity)
   const startDate = useSelector(state => state.startDate)
   const loading = useSelector(state => state.loading)
+  const defaultPickupLocation = useSelector((state) => state.defaultPickupLocation);
   const endDate = useSelector(state => state.endDate)
   const filterString = useSelector(state => state.filterString)
   const defaultBrand = useSelector(state => state.defaultBrand)
@@ -24,7 +25,7 @@ export default function Page() {
   const filterData = useSelector(state => state.filterData)
   const vehicleName = useSelector(state => state.vehicleName)
   const triggerApi = useSelector(state => state.triggerApi)
-  const [selectedKeys, setSelectedKeys] = useState("")
+  const selectedKeys = useSelector(state => state.selectedKeys)
 
   useEffect(() => {
     (async () => {
@@ -37,15 +38,17 @@ export default function Page() {
   const filter = async (clear) => {
     let str = filterString
     if (clear == 'clear') {
-      str = { location: selectedCity.myLocation }
+      str = { location: selectedCity.myLocation }      
       dispatch({ type: "FILTERSTRING", payload: str })
-      dispatch({ type: "DEFAULTBRAND", payload: "Please choose brand" })
-      dispatch({ type: "DEFAULTPRICE", payload: "Please sort type" })
-      dispatch({ type: "DEFAULTPICKUPLOCATION", payload: "Please select the nearby location" })
-      const ele = document.getElementById("cars")
-      ele.value = "Please select the nearby location"
-      const element = document.getElementById("brands")
-      element.value = "Please choose brand"
+      dispatch({ type: "DEFAULTBRAND", payload: defaultBrand })
+      dispatch({ type: "DEFAULTPRICE", payload: defaultPrice })
+      dispatch({ type: "DEFAULTPICKUPLOCATION", payload: defaultPickupLocation })
+      dispatch({ type: "SELECTEDKEYS", payload: defaultPickupLocation })
+      debugger
+      //const ele = document.getElementById("cars")
+      //ele.value = "Please select the nearby location"
+      // const element = document.getElementById("brands")
+      // element.value = "Please choose brand"
       dispatch({ type: "VEHICLENAME", payload: "" })
       dispatch({ type: "FILTERDATA", payload: "" })
     }
@@ -100,7 +103,7 @@ export default function Page() {
               <CardBody>
                 <select style={{ height: "57px" }} className="form-select" defaultValue={defaultBrand} onClick={async (e) => {
                   const o = e.target.value
-                  setSelectedKeys(o)
+                  dispatch({ type: "SELECTEDKEYS", payload: o })
                   const filter = { ...filterString, brand: o }
                   dispatch({ type: "FILTERSTRING", payload: filter })
                   dispatch({ type: "DEFAULTBRAND", payload: o })
@@ -119,7 +122,7 @@ export default function Page() {
               <CardBody>
                 <select style={{ height: "57px" }} className="form-select" defaultValue={defaultPrice} onClick={async (e) => {
                   const o = e.target.value
-                  setSelectedKeys(o)
+                  dispatch({ type: "SELECTEDKEYS", payload: o })
                   const filter = { ...filterString, sort: o }
                   dispatch({ type: "FILTERSTRING", payload: filter })
                 }}>

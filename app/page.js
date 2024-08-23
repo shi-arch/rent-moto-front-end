@@ -114,7 +114,7 @@ export default function Home() {
                   <p>Duration: 1 Day</p>
                 </div>
                 <button style={{ width: '100%', background: 'black' }} onClick={search} type="submit" className="btn btn-success btn-block form-control">Search</button>
-              </div> : ""
+              </div> : <Loading />
           }
 
         </div>
