@@ -15,7 +15,7 @@ import "./layout.css"
 
 export default function RootLayout({children}) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" data-theme="light" style="color-scheme: light;">
       <head />
       <body
         className={clsx(
