@@ -25,7 +25,7 @@ export default function RootLayout({children}) {
       >
         {/* <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}> */}
         <Provider store={store}>
-        <Providers>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
             <Header />
             <div style={{ minHeight: "80vh" }}>
               {children}
