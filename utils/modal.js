@@ -315,8 +315,8 @@ export const SignUpModal = (props) => {
     }
   }
   const setUserData = (value, type) => {
-    Object.assign(userDetails, { [type]: value });
-    dispatch({ type: "USERDETAILS", payload: userDetails })
+    const newObj = Object.assign(userDetails, { [type]: value });
+    dispatch({ type: "USERDETAILS", payload: newObj })
   }
 
   const sendOtp = async () => {

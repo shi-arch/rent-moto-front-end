@@ -20,7 +20,7 @@ export default function Page() {
             </div>
             <div className='row' style={{ textAlign: 'center', display: "flex" }}>
                 {
-                    bookings && bookings.length > 0 && bookings.map((obj) => {
+                    bookings && bookings.length ? bookings.map((obj) => {
                         const { bookingData, vehicleData } = obj
                         const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
                         const { location, vehicleNumber, BookingEndDateAndTime, BookingStartDateAndTime, bookingAmount, _id, pickupLocation } = bookingData
@@ -80,7 +80,7 @@ export default function Page() {
                                 </Card>
                             </div>
                         )
-                    })
+                    }) : <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}><h1>No Bookings</h1></div>
                 }
 
             </div>
