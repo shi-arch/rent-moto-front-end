@@ -44,11 +44,6 @@ export default function Page() {
       dispatch({ type: "DEFAULTPRICE", payload: defaultPrice })
       dispatch({ type: "DEFAULTPICKUPLOCATION", payload: defaultPickupLocation })
       dispatch({ type: "SELECTEDKEYS", payload: defaultPickupLocation })
-      debugger
-      //const ele = document.getElementById("cars")
-      //ele.value = "Please select the nearby location"
-      // const element = document.getElementById("brands")
-      // element.value = "Please choose brand"
       dispatch({ type: "VEHICLENAME", payload: "" })
       dispatch({ type: "FILTERDATA", payload: "" })
     }

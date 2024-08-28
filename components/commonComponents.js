@@ -19,7 +19,7 @@ import SoldOutGif from '../utils/images/sold-out.gif'
 import { Skeleton } from "@nextui-org/skeleton";
 import Image from 'next/image'
 import './commonComponent.css'
-import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileIcon, UserIcon } from "../utils/icons";
+import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileBlackIcon, ProfileIcon, UserIcon } from "../utils/icons";
 
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
@@ -170,10 +170,7 @@ export const ProfileDrop = () => {
                 }} startContent={<LogOut />} key="copy">Logout</DropdownItem>
                 <DropdownItem onClick={() => {
                     router.push('/profile')
-                }} startContent={<ProfileIcon />} key="copy">Profile</DropdownItem>
-                <DropdownItem onClick={() => {
-                    router.push('/bookings')
-                }} startContent={<Bookingicon />} key="copy">My Bookings</DropdownItem>
+                }} startContent={<ProfileBlackIcon />} key="copy">Profile</DropdownItem>
                 
             </DropdownMenu>
         </Dropdown>

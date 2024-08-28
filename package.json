@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "next dev -p 3001",
+		"dev": "next dev -p 3002",
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
@@ -31,6 +31,7 @@
 		"@nextui-org/skeleton": "^2.0.31",
 		"@nextui-org/switch": "2.0.31",
 		"@nextui-org/system": "2.2.1",
+		"@nextui-org/tabs": "^2.0.35",
 		"@nextui-org/theme": "2.2.5",
 		"@react-aria/ssr": "3.9.4",
 		"@react-aria/visually-hidden": "3.8.12",
