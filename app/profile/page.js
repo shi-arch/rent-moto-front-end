@@ -31,6 +31,8 @@ export default function Page() {
   const [isVisible, setIsVisible] = React.useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
   const [userDetails, setUserDetauls] = useState("")
+  const [bookingTabName, setBookingTabName] = useState("upcoming")  
+  const [custBookingData, setCustBookingData] = useState("")
   const [tabName, setTabName] = useState("profile")
 
   useEffect(() => {
@@ -101,6 +103,36 @@ export default function Page() {
       dispatch({ type: "USERDETAILS", payload: userDetails })
     }
   }
+  useEffect(() => {
+    if (bookings.length) {
+      const obj = {
+        upComingBookings: [],
+        completedBookings: [],
+        currentBookings: []
+      }
+      const currentTime = new Date().getTime()
+      for (let i = 0; i < bookings.length; i++) {
+        let { startDate, startTime } = bookings[i].bookingData.BookingStartDateAndTime
+        let { endDate, endTime } = bookings[i].bookingData.BookingEndDateAndTime
+        let bookingStartHours = new Date(moment(startTime, "hh:mm A")).getHours()
+        let bookingStartMinutes = new Date(moment(startTime, "hh:mm A")).getMinutes()
+        let bookingEndHours = new Date(moment(endTime, "hh:mm A")).getHours()
+        let bookingEndMinutes = new Date(moment(endTime, "hh:mm A")).getMinutes()
+        let bookingStartDate = moment(startDate).add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+        let bookingEndDate = moment(endDate).add(bookingEndHours, 'hours').add(bookingEndMinutes, 'minutes')
+        bookingEndDate = new Date(bookingEndDate.format()).getTime()
+        bookingStartDate = new Date(bookingStartDate.format()).getTime()
+        if (bookingStartDate > currentTime) {
+          obj.upComingBookings.push(bookings[i])
+        } else if (currentTime > bookingStartDate && currentTime < bookingEndDate) {
+          obj.currentBookings.push(bookings[i])
+        } else {
+          obj.completedBookings.push(bookings[i])
+        }
+      }
+      setCustBookingData(obj)
+    }
+  }, [])
   return (
     <div className='container' style={{ marginTop: "35px" }}>
       <div style={{ textAlign: 'center' }}>
@@ -231,41 +263,120 @@ export default function Page() {
             }
             {
               tabName == "bookings" ?
-                <Card style={{ padding: '20px', marginBottom: '20px' }}>
-                  <div className='row' style={{ textAlign: 'center', display: "flex" }}>
-                    {
-                      bookings && bookings.length ? bookings.map((obj) => {
-                        const { bookingData, vehicleData } = obj
-                        const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
-                        const { location, vehicleNumber, BookingEndDateAndTime, BookingStartDateAndTime, bookingAmount, _id, pickupLocation } = bookingData
-                        return (
-                          <div className='col-md-12' style={{ marginBottom: '25px' }}>
-                            <Card style={{ marginLeft: 'auto' }}>
-                              <CardHeader>
-                              </CardHeader>
-                              <CardBody>
-                                <div className='row'>
-                                  <div className='col-md-4'>
-                                    <img alt="Svg icon" src={url} style={{ width: '200px' }} />
-                                  </div>
-                                  <div className='col-md-8'>
-                                    <h6 style={{ color: '#e03546', marginLeft: 'auto' }}>{name}</h6>
-                                    <label>Booking ID : <span style={{ color: '#e03546' }}>{_id.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
-                                    <label>Pickup Location : <span style={{ color: '#e03546' }}>{pickupLocation}</span> | City: <span style={{ color: '#e03546' }}>{location}</span> </label>
-                                    <label>Pickup Time : <span style={{ color: '#e03546' }}>{BookingStartDateAndTime.startTime}</span> | Drop Time : <span style={{ color: '#e03546' }}>{BookingEndDateAndTime.endTime}</span> </label>
-                                    <label>Drop Date : <span style={{ color: '#e03546' }}>{moment(BookingEndDateAndTime.endDate).format('D MMM, YYYY')}</span> | Pickup Date : <span style={{ color: '#e03546' }}>{moment(BookingStartDateAndTime.startDate).format('D MMM, YYYY')}</span> </label>
-                                    <label>Booking Amount : <span style={{ color: '#e03546' }}>{bookingAmount}</span> | Disptance Limit : <span style={{ color: '#e03546' }}>{distanceLimit}</span> </label>
-                                  </div>
-                                </div>
-                              </CardBody>
-                            </Card>
-                          </div>
-                        )
-                      }) : <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}><h1>No Bookings</h1></div>
-                    }
-
+                <>
+                  <Card style={{ padding: '20px', marginBottom: '20px' }}>
+                  <div style={{ display: "flex" }}>
+                    <div className={bookingTabName == "upcoming" ? "selectedColor" : ""} onClick={() => setBookingTabName("upcoming")} style={{border: "3.5px solid #e03546", borderRadius: "10px", padding: "10px", display: "flex", margin: "20px auto", cursor: "pointer", background: "#e03546", }}>
+                      <span className={bookingTabName == "upcoming" ? "selectedFont" : ""} style={{ color: "white", fontWeight: "bold", fontSize: "20px" }}>Upcoming Rides</span>
+                    </div>
+                    <div onClick={() => setBookingTabName("current")} className={bookingTabName == "current" ? "selectedColor" : ""} style={{marginRight: "auto",  border: "3.5px solid #e03546", borderRadius: "10px", padding: "10px", display: "flex", margin: "20px auto", cursor: "pointer", background: "#e03546", }}>
+                      <span className={bookingTabName == "current" ? "selectedFont" : ""} style={{ color: "white", fontWeight: "bold", fontSize: "20px" }}>Current Rides</span>
+                    </div>
+                    <div onClick={() => setBookingTabName("completed")} className={bookingTabName == "completed" ? "selectedColor" : ""} style={{marginRight: "auto",  border: "3.5px solid #e03546", borderRadius: "10px", padding: "10px", display: "flex", margin: "20px auto", cursor: "pointer", background: "#e03546", }}>
+                      <span className={bookingTabName == "completed" ? "selectedFont" : ""} style={{ color: "white", fontWeight: "bold", fontSize: "20px" }}>Completed Rides</span>
+                    </div>
                   </div>
-                </Card>
+                    <div className='row' style={{ textAlign: 'center', display: "flex" }}>
+                      {
+                        bookingTabName == "upcoming" ?
+                        custBookingData && custBookingData.upComingBookings ?
+                        custBookingData.upComingBookings.map((obj) => {
+                          const { bookingData, vehicleData } = obj
+                          const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
+                          const { location, vehicleNumber, BookingEndDateAndTime, BookingStartDateAndTime, bookingAmount, _id, pickupLocation } = bookingData
+                          return (
+                            <div className='col-md-12' style={{ marginBottom: '25px' }}>
+                              <Card style={{ marginLeft: 'auto' }}>
+                                <CardHeader>
+                                </CardHeader>
+                                <CardBody>
+                                  <div className='row'>
+                                    <div className='col-md-4'>
+                                      <img alt="Svg icon" src={url} style={{ width: '200px' }} />
+                                    </div>
+                                    <div className='col-md-8'>
+                                      <h6 style={{ color: '#e03546', marginLeft: 'auto' }}>{name}</h6>
+                                      <label>Booking ID : <span style={{ color: '#e03546' }}>{_id.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
+                                      <label>Pickup Location : <span style={{ color: '#e03546' }}>{pickupLocation}</span> | City: <span style={{ color: '#e03546' }}>{location}</span> </label>
+                                      <label>Pickup Time : <span style={{ color: '#e03546' }}>{BookingStartDateAndTime.startTime}</span> | Drop Time : <span style={{ color: '#e03546' }}>{BookingEndDateAndTime.endTime}</span> </label>
+                                      <label>Drop Date : <span style={{ color: '#e03546' }}>{moment(BookingEndDateAndTime.endDate).format('D MMM, YYYY')}</span> | Pickup Date : <span style={{ color: '#e03546' }}>{moment(BookingStartDateAndTime.startDate).format('D MMM, YYYY')}</span> </label>
+                                      <label>Booking Amount : <span style={{ color: '#e03546' }}>{bookingAmount}</span> | Disptance Limit : <span style={{ color: '#e03546' }}>{distanceLimit}</span> </label>
+                                    </div>
+                                  </div>
+                                </CardBody>
+                              </Card>
+                            </div>
+                          )
+                        }) : <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}><h1>No Bookings</h1></div> : ""
+                      }
+                      {
+                        bookingTabName == "current" ?
+                        custBookingData && custBookingData.currentBookings ?
+                        custBookingData.currentBookings.map((obj) => {
+                          const { bookingData, vehicleData } = obj
+                          const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
+                          const { location, vehicleNumber, BookingEndDateAndTime, BookingStartDateAndTime, bookingAmount, _id, pickupLocation } = bookingData
+                          return (
+                            <div className='col-md-12' style={{ marginBottom: '25px' }}>
+                              <Card style={{ marginLeft: 'auto' }}>
+                                <CardHeader>
+                                </CardHeader>
+                                <CardBody>
+                                  <div className='row'>
+                                    <div className='col-md-4'>
+                                      <img alt="Svg icon" src={url} style={{ width: '200px' }} />
+                                    </div>
+                                    <div className='col-md-8'>
+                                      <h6 style={{ color: '#e03546', marginLeft: 'auto' }}>{name}</h6>
+                                      <label>Booking ID : <span style={{ color: '#e03546' }}>{_id.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
+                                      <label>Pickup Location : <span style={{ color: '#e03546' }}>{pickupLocation}</span> | City: <span style={{ color: '#e03546' }}>{location}</span> </label>
+                                      <label>Pickup Time : <span style={{ color: '#e03546' }}>{BookingStartDateAndTime.startTime}</span> | Drop Time : <span style={{ color: '#e03546' }}>{BookingEndDateAndTime.endTime}</span> </label>
+                                      <label>Drop Date : <span style={{ color: '#e03546' }}>{moment(BookingEndDateAndTime.endDate).format('D MMM, YYYY')}</span> | Pickup Date : <span style={{ color: '#e03546' }}>{moment(BookingStartDateAndTime.startDate).format('D MMM, YYYY')}</span> </label>
+                                      <label>Booking Amount : <span style={{ color: '#e03546' }}>{bookingAmount}</span> | Disptance Limit : <span style={{ color: '#e03546' }}>{distanceLimit}</span> </label>
+                                    </div>
+                                  </div>
+                                </CardBody>
+                              </Card>
+                            </div>
+                          )
+                        }) : <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}><h1>No Bookings</h1></div> : ""
+                      }
+                      {
+                        bookingTabName == "completed" ?
+                        custBookingData && custBookingData.completedBookings ?
+                        custBookingData.completedBookings.map((obj) => {
+                          const { bookingData, vehicleData } = obj
+                          const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
+                          const { location, vehicleNumber, BookingEndDateAndTime, BookingStartDateAndTime, bookingAmount, _id, pickupLocation } = bookingData
+                          return (
+                            <div className='col-md-12' style={{ marginBottom: '25px' }}>
+                              <Card style={{ marginLeft: 'auto' }}>
+                                <CardHeader>
+                                </CardHeader>
+                                <CardBody>
+                                  <div className='row'>
+                                    <div className='col-md-4'>
+                                      <img alt="Svg icon" src={url} style={{ width: '200px' }} />
+                                    </div>
+                                    <div className='col-md-8'>
+                                      <h6 style={{ color: '#e03546', marginLeft: 'auto' }}>{name}</h6>
+                                      <label>Booking ID : <span style={{ color: '#e03546' }}>{_id.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
+                                      <label>Pickup Location : <span style={{ color: '#e03546' }}>{pickupLocation}</span> | City: <span style={{ color: '#e03546' }}>{location}</span> </label>
+                                      <label>Pickup Time : <span style={{ color: '#e03546' }}>{BookingStartDateAndTime.startTime}</span> | Drop Time : <span style={{ color: '#e03546' }}>{BookingEndDateAndTime.endTime}</span> </label>
+                                      <label>Drop Date : <span style={{ color: '#e03546' }}>{moment(BookingEndDateAndTime.endDate).format('D MMM, YYYY')}</span> | Pickup Date : <span style={{ color: '#e03546' }}>{moment(BookingStartDateAndTime.startDate).format('D MMM, YYYY')}</span> </label>
+                                      <label>Booking Amount : <span style={{ color: '#e03546' }}>{bookingAmount}</span> | Disptance Limit : <span style={{ color: '#e03546' }}>{distanceLimit}</span> </label>
+                                    </div>
+                                  </div>
+                                </CardBody>
+                              </Card>
+                            </div>
+                          )
+                        }) : <div style={{ border: '2px dashed #00a32a', padding: '10px', marginBottom: '10px' }}><h1>No Bookings</h1></div> : ""
+                      }
+                    </div>
+                  </Card>
+                </>
+
                 : ""
             }
 

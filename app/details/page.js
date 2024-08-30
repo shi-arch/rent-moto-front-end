@@ -17,23 +17,27 @@ import { PaymentModal } from '../../utils/modal';
 export default function Page() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId } = useSelector(state => state.selectedVehicle)
+  const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = useSelector(state => state.selectedVehicle)
   const { myLocation } = useSelector(state => state.selectedCity)
   const { startDate, endDate, startTime, endTime, selectedLocality, filterString, loading, loginData } = useSelector(state => state)
   const [cgst, setCgst] = useState(0)
+  const [vehicleRentalCost, setVehicleRentalCost] = useState(0)
   const [totalAmount, setTotalAmount] = useState(0)
   const { paymentMethod } = useSelector((state) => state);
   const [licenceCheck, setLicenceCheck] = useState(false)
   const [ageCheck, setAgeCheck] = useState(false)
   const [hours, setHours] = useState(0)
+  const [pricePerDayCal, setPricePerDayCal] = useState(false)
   const [invoice, setInvoice] = useState("")
 
   useEffect(() => {
-    let price = pricePerday * 0.14
-    setCgst(price.toFixed())
-    let total = parseInt(pricePerday) + price * 2
-    setTotalAmount(total.toFixed())
-  }, [endTime])
+    if(pricePerDayCal && vehicleRentalCost){
+      let price = vehicleRentalCost * 0.14
+      setCgst(price.toFixed())
+      let total = parseInt(vehicleRentalCost) + price * 2
+      setTotalAmount(total.toFixed())
+    }    
+  }, [pricePerDayCal])
 
   useEffect(() => {
     let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
@@ -41,9 +45,18 @@ export default function Page() {
     let startDateHours = moment(startDate).add(startTimeHours, 'hours')
     let endDateHours = moment(endDate).add(endTimeHours, 'hours')
     var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
-    setHours((estHours / 3600000).toFixed())
+    let settingHours = Math.trunc(estHours / 3600000)
+    setHours(settingHours)
+    let dayCountMult = pricePerday
+    if(settingHours > 24){
+      dayCountMult = Math.trunc(settingHours / 24) * pricePerday
+      if(settingHours % 24 > 0){
+        dayCountMult = (Math.trunc(settingHours / 24) + 1) * pricePerday
+      }      
+    }
+    setVehicleRentalCost(dayCountMult)
+    setPricePerDayCal(true)
     if (loginData) {
-      debugger
       let loginStr = loginData
       let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id
       setInvoice(str)
@@ -90,6 +103,23 @@ export default function Page() {
       }
       const res = await postApi('/booking', obj)
       if (res) {
+        const updatBookingObj = {
+          bookingData: {BookingStartDateAndTime: obj.BookingStartDateAndTime, BookingEndDateAndTime: obj.BookingEndDateAndTime,
+            bookingAmount: obj.bookingAmount, isBooked: true, vehicleNumber, vehicleId, pickupLocation, location, contact
+          },
+          vehicleData: {
+            accessChargePerKm, bookingCount, brand, distanceLimit, pricePerday, transmissionType, url
+          }
+        }
+        const getData = localStorage.getItem('loginData')
+        if(getData){
+          const data = JSON.parse(localStorage.getItem("loginData"))
+          const cloneBooking = [...data.bookings]
+          cloneBooking.push(updatBookingObj)
+          data.bookings = cloneBooking
+          localStorage.setItem("loginData", JSON.stringify(data))
+
+        }
         const result = await postApi('/searchVehicle', filterString)
         if (result) {
           dispatch({ type: "VEHICLADATA", payload: result.data })
@@ -218,7 +248,7 @@ export default function Page() {
             <hr />
             <CardBody>
               <p>Vehicle Rental Cost <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
-              <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
+              <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {vehicleRentalCost}</label></p>
               <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
               <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
             </CardBody>

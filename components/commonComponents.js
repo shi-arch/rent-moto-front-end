@@ -24,7 +24,7 @@ import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileBlackIcon, ProfileIc
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
     const { name, url, pricePerday, vehicleCount, accessChargePerKm, finalCharge, bookingCount } = props
-    const selectedLocality = useSelector((state) => state.selectedLocality);
+    const {selectedLocality, error} = useSelector((state) => state);
     const router = useRouter()
     return (
         <Card className="max-w-[400px]">
@@ -35,27 +35,27 @@ export const BikeCard = (props) => {
                 {
                     bookingCount ? <div><p style={{ color: "red" }}>Vehicle booked : {bookingCount} Times</p></div> : null
                 }
-                
+
             </CardHeader>
             <CardBody>
                 <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="Bike picture" />
-                <div  style={{ marginTop: "14px", display: "flex" }}>
-                    <div  style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
-                    <div  style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px"}}>₹{pricePerday}/day</div>
+                <div style={{ marginTop: "14px", display: "flex" }}>
+                    <div style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
+                    <div style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px" }}>₹{pricePerday}/day</div>
                 </div>
                 <span style={{ marginTop: "14px", display: "flex" }}><img alt="Svg icon" src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
                 <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
                 <hr style={{ marginTop: "14px 0px" }} />
-                <div style={{display: "flex"}}>
+                <div style={{ display: "flex" }}>
                     <div style={{ fontWeight: "700" }}>₹ {finalCharge.toFixed()}</div>
-                    <div style={{ marginLeft: "auto"}}>
+                    <div style={{ marginLeft: "auto" }}>
                         {
                             vehicleCount !== 0 ?
                                 <button style={{ width: '100%', background: 'black' }} onClick={() => {
                                     dispatch({ type: "SELECTEDVEHICLE", payload: props })
                                     dispatch({ type: "TRIGGERAPI", payload: false })
                                     router.push('/details')
-                                }} type="submit" disabled={vehicleCount == 0 ? true : false || !selectedLocality} className="btn btn-success btn-block form-control">Rent Now</button> :
+                                }} type="submit" disabled={vehicleCount == 0 || error?.msg ? true : false || !selectedLocality} className="btn btn-success btn-block form-control">Rent Now</button> :
                                 ""
                         }
                     </div>
@@ -161,7 +161,7 @@ export const ProfileDrop = () => {
             <DropdownMenu aria-label="Static Actions" disabledKeys={["name"]}>
                 <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData?.firstName + " " + loginData?.lastName}</span></DropdownItem>
                 <DropdownItem onClick={() => {
-                    localStorage.removeItem('loginData')                    
+                    localStorage.removeItem('loginData')
                     dispatch({ type: "USERDETAILS", payload: "" })
                     dispatch({ type: "ISLOGGEDIN", payload: false })
                     dispatch({ type: "LOGINDATA", payload: "" })
@@ -171,7 +171,7 @@ export const ProfileDrop = () => {
                 <DropdownItem onClick={() => {
                     router.push('/profile')
                 }} startContent={<ProfileBlackIcon />} key="copy">Profile</DropdownItem>
-                
+
             </DropdownMenu>
         </Dropdown>
     )
@@ -299,25 +299,27 @@ export const TimerSelection = (props) => {
 
 export const DateSelection = (props) => {
     const { type, isBold } = props
-    const { startDate, endDate, filterString } = useSelector(state => state)
+    const { startDate, endDate, filterString, error } = useSelector(state => state)
     const dispatch = useDispatch()
     const handleChange = (date) => {
         dispatch({ type: type, payload: date })
     }
     return (
-        <DatePicker
-            selected={type == "STARTDATE" ? startDate : endDate}
-            onChange={async (e) => {
-                const res = await getDateTimeInput(type, e)
-                isValid()
-                dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: res } })
-            }}
-            dateFormat="d MMM, yyyy"
-            minDate={new Date()}
-            //errorMessage={'Please select valid date'}
-            // isValidDate={true}
-            customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('DD MMM, YYYY')} />}
-        />
+        <>
+            <DatePicker
+                selected={type == "STARTDATE" ? startDate : endDate}
+                onChange={async (e) => {
+                    const res = await getDateTimeInput(type, e)
+                    isValid()
+                    dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: res } })
+                }}
+                dateFormat="d MMM, yyyy"
+                minDate={new Date()}
+                customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('DD MMM, YYYY')} />}
+            />
+            <span style={{ color: "red", fontSize: "12px" }}>{type == "ENDDATE" && error.type == "endDate" && error.msg }</span>
+            <span style={{ color: "red", fontSize: "12px" }}>{type == "STARTDATE" && error.type == "startDate" && error.msg }</span>
+        </>
     )
 }
 
@@ -325,11 +327,11 @@ const CustomInput = ({ value, onClick, label, isBold }) => {
     const styleObj = {
         display: 'block', fontSize: '13px', fontWeight: '400', marginLeft: '12px', fontWeight: "bold", color: "#47475e"
     }
-    if(isBold){
+    if (isBold) {
         styleObj.fontWeight = "normal";
     }
     return (
-        <div className="mobile-bot-space" style={{cursor: 'pointer', padding: "5px 0px", border: "2px solid rgb(225 225 245)", borderRadius: "10px", boxShadow: "var(--bs-box-shadow-sm) !important"}}>
+        <div className="mobile-bot-space" style={{ cursor: 'pointer', padding: "5px 0px", border: "2px solid rgb(225 225 245)", borderRadius: "10px", boxShadow: "var(--bs-box-shadow-sm) !important" }}>
             <span style={styleObj}>{label}</span>
             <div role="button" tabIndex="0" onClick={onClick} className="custom-input d-flex align-items-center container" >
                 <button className="custom-input" style={{ fontWeight: '400', fontSize: '15px', color: "#797982" }}>

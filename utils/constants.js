@@ -3,7 +3,7 @@ import store from './store'
 import moment from "moment";
 
 export const getDateTimeInput = async (name, val) => {
-    if (name.includes("DATE")) {        
+    if (name.includes("DATE")) {
         let monthVal = new Date(val)?.getMonth() + 1
         let dayVal = new Date(val)?.getDate()
         const month = monthVal?.toString()?.length == 1 ? `0${monthVal}` : monthVal.toString()
@@ -38,10 +38,10 @@ export const dateFormatter = (str) => {
 }
 
 export const dispatchFunction = async (obj) => {
-    const dispatch = store.dispatch    
+    const dispatch = store.dispatch
     const { filterString, startTime, startDate, endDate, endTime, disabledKeys, citiesData, selectedCity, selectedLocality, loginData } = obj
     dispatch({ type: "SELECTEDLOCALITY", payload: selectedLocality })
-    dispatch({ type: "DEFAULTPICKUPLOCATION", payload: selectedLocality })    
+    dispatch({ type: "DEFAULTPICKUPLOCATION", payload: selectedLocality })
     dispatch({ type: "CITIESDATA", payload: citiesData })
     dispatch({ type: "LOGINDATA", payload: loginData })
     dispatch({ type: "ISLOGGEDIN", payload: loginData ? true : false })
@@ -70,7 +70,7 @@ export const apiCall = async () => {
     }
 }
 
-export const sortArr = [{key: "Please select sort type", label: "Please select sort type"}, {key: "lowToHigh", label: "From low to high"}, {key: "highToLow", label: "From high to low"}]
+export const sortArr = [{ key: "Please select sort type", label: "Please select sort type" }, { key: "lowToHigh", label: "From low to high" }, { key: "highToLow", label: "From high to low" }]
 
 
 export const checkSoldOut = (BookingStartDateAndTime, BookingEndDateAndTime) => {
@@ -105,6 +105,62 @@ export const checkSoldOut = (BookingStartDateAndTime, BookingEndDateAndTime) => 
     store.dispatch({ type: "SOLDOUT", payload: soldOut })
 }
 
+// export const isValid = () => {
+//     let isError = false
+//     const { startTime, endTime, startDate, endDate } = store.getState()
+//     const dispatch = store.dispatch
+//     if (!startDate) {
+//         isError = true
+//         dispatch({ type: "ERROR", payload: { type: 'startDate', msg: "Please select the start date" } })
+//     } else if (!startTime) {
+//         isError = true
+//         store.dispatch({ type: "ERROR", payload: { type: 'startTime', msg: "Please select the start time" } })
+//     } else if (startTime) {
+//         let momStartTime = moment(startTime, "hh:mm A");
+//         let momEndTime = moment(endTime, "hh:mm A");
+//         const selectedTime = new Date(momStartTime).getHours() * 60 + new Date(momStartTime).getMinutes()
+//         const currentTime = new Date().getHours() * 60 + new Date().getMinutes()
+//         if (selectedTime < currentTime) {
+//             isError = true
+//             dispatch({ type: "ERROR", payload: { type: 'startTime', msg: "Please select the valid start time" } })
+//         } else if (!endDate) {
+//             isError = true
+//             dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the end date" } })
+//         } else if (endDate) {
+//             const date1 = new Date(startDate);
+//             const date2 = new Date(endDate);
+//             const diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
+//             if (diffDays < 0) {
+//                 isError = true
+//                 dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the valid end date" } })
+//             } else if (!endTime) {
+//                 isError = true
+//                 dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the end time" } })
+//             } else if (endTime) {
+//                 if (startDate == endDate) {
+//                     const expectedTime = new Date(momStartTime).getHours() + new Date(momStartTime).getMinutes() / 60 + 4
+//                     const selectedTime = new Date(momEndTime).getHours() + new Date(momEndTime).getMinutes() / 60
+//                     if (selectedTime < expectedTime) {
+//                         isError = true
+//                         dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the valid end time" } })
+//                     } else {
+//                         isError = false
+//                         dispatch({ type: "ERROR", payload: "" })
+//                     }
+//                 } else {
+//                     isError = false
+//                     dispatch({ type: "ERROR", payload: "" })
+//                 }
+//             }
+//         }
+//     }
+//     if (isError) {
+//         return false
+//     } else {
+//         return true
+//     }
+// }
+
 export const isValid = () => {
     let isError = false
     const { startTime, endTime, startDate, endDate } = store.getState()
@@ -115,45 +171,38 @@ export const isValid = () => {
     } else if (!startTime) {
         isError = true
         store.dispatch({ type: "ERROR", payload: { type: 'startTime', msg: "Please select the start time" } })
-    } else if (startTime) {
-        let momStartTime = moment(startTime, "hh:mm A");
-        let momEndTime = moment(endTime, "hh:mm A");
-        const selectedTime = new Date(momStartTime).getHours() * 60 + new Date(momStartTime).getMinutes()
-        const currentTime = new Date().getHours() * 60 + new Date().getMinutes()
-        if (selectedTime < currentTime) {
+    } else if (!endDate) {
+        isError = true
+        store.dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the end date" } })
+    } else if (endDate) {
+        const date1 = new Date(startDate);
+        const date2 = new Date(endDate);
+        const diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
+        if (diffDays < 0) {
             isError = true
-            dispatch({ type: "ERROR", payload: { type: 'startTime', msg: "Please select the valid start time" } })
-        } else if (!endDate) {
+            dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the valid end date" } })
+        } else if (!endTime) {
             isError = true
-            dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the end date" } })
-        } else if (endDate) {
-            const date1 = new Date(startDate);
-            const date2 = new Date(endDate);
-            const diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
-            if (diffDays < 0) {
-                isError = true
-                dispatch({ type: "ERROR", payload: { type: 'endDate', msg: "Please select the valid end date" } })
-            } else if (!endTime) {
-                isError = true
-                dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the end time" } })
-            } else if (endTime) {
-                if (startDate == endDate) {
-                    const expectedTime = new Date(momStartTime).getHours() + new Date(momStartTime).getMinutes() / 60 + 4
-                    const selectedTime = new Date(momEndTime).getHours() + new Date(momEndTime).getMinutes() / 60
-                    if (selectedTime < expectedTime) {
-                        isError = true
-                        dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the valid end time" } })
-                    } else {
-                        isError = false
-                        dispatch({ type: "ERROR", payload: "" })
-                    }
+            dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the end time" } })
+        } else if (endTime) {
+            if (startDate == endDate) {
+                let momStartTime = moment(startTime, "hh:mm A");
+                let momEndTime = moment(endTime, "hh:mm A");
+                const expectedTime = new Date(momStartTime).getHours() + new Date(momStartTime).getMinutes() / 60  + .5
+                const selectedTime = new Date(momEndTime).getHours() + new Date(momEndTime).getMinutes() / 60
+                if (selectedTime < expectedTime) {
+                    isError = true
+                    dispatch({ type: "ERROR", payload: { type: 'endTime', msg: "Please select the valid end time" } })
                 } else {
                     isError = false
                     dispatch({ type: "ERROR", payload: "" })
                 }
+            } else {
+                isError = false
+                dispatch({ type: "ERROR", payload: "" })
             }
         }
-    }
+    }    
     if (isError) {
         return false
     } else {
