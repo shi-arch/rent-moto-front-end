@@ -64,11 +64,37 @@ export const CitiesModal = (props) => {
 export const OtpModal = (props) => {
   const router = useRouter()
   const dispatch = useDispatch();
+  const [startTimer, setStartTimer] = useState(false)
   const otpModel = useSelector((state) => state.otpModel);
-  const error = useSelector((state) => state.error);
+  const [count, setCount] = useState(0)
+  const {error, userDetails} = useSelector((state) => state);
   const mobile = useSelector((state) => state.mobile);
   const loginData = useSelector((state) => state.loginData);
   const [otp, setOtp] = useState("")
+  const [resendOtpStatus, setResendOtp] = useState(false)
+
+  useEffect(() => {
+    if (startTimer) {
+      setStartTimer(false)
+      setTimeout(() => {
+        setStartTimer(true)
+        if (count == 10) {
+          setStartTimer(false)
+          setCount(0)
+        } else {
+          setCount(count + 1)
+        }
+      }, 1000)
+    }
+  }, [startTimer])
+
+  useEffect(() => {
+    if(resendOtpStatus){
+      setTimeout(() => {
+        setResendOtp(false)
+      }, 2000)
+    }   
+  }, [resendOtpStatus])
 
   const verifyOtp = () => {
     if (otp.length == 6) {
@@ -79,7 +105,7 @@ export const OtpModal = (props) => {
       localStorage.setItem('isLoggedIn', true)
       swal({
         title: "Congratulations!",
-        text: "You have successfulluy logged in!",
+        text: "You have successfully logged in!",
         icon: "success",
         dangerMode: true,
       })
@@ -87,6 +113,14 @@ export const OtpModal = (props) => {
     } else {
       dispatch({ type: "ERROR", payload: "Enter 6 digit otp" })
     }
+  }
+  const resendOtp = async () => {
+    const { contact } = userDetails
+    dispatch({ type: "LOADING", payload: true })
+    setTimeout(() => {
+      dispatch({ type: "LOADING", payload: false })
+      setResendOtp(true)
+    }, 1000)
   }
   return (
     <>
@@ -105,7 +139,12 @@ export const OtpModal = (props) => {
                   value={otp}
                   isInvalid={error ? true : false}
                   errorMessage={error}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => {
+                    if (e.target.value.length > 6) {
+                      return ""
+                    }
+                    setOtp(e.target.value)
+                  }}
                   autoFocus
                   label="OTP"
                   placeholder="Enter 6 digit otp"
@@ -113,10 +152,14 @@ export const OtpModal = (props) => {
                 />
               </ModalBody>
               <ModalFooter>
+                <Button style={{ color: "white", background: "black" }} disabled={count ? true : false} onClick={resendOtp}>
+                  Resend Otp
+                </Button>
                 <Button style={{ color: "white", background: "black" }} onClick={verifyOtp}>
                   Verify Otp
                 </Button>
               </ModalFooter>
+              <p style={{color: "green", textAlign: "center", marginBottom: "10px"}}>{resendOtpStatus && userDetails && userDetails.contact ? 'Otp has sent successfully on your mobile ' + userDetails.contact : ""}</p>
             </>
           )}
         </ModalContent>
@@ -176,7 +219,13 @@ export const LoginModal = (props) => {
                 isInvalid={error ? true : false}
                 errorMessage={error}
                 value={userDetails.contact}
-                onChange={(e) => dispatch({ type: "USERDETAILS", payload: { ...userDetails, contact: e.target.value } }) || setMobile(e.target.value)}
+                onChange={(e) => {
+                  let obj = { ...userDetails, contact: e.target.value }
+                  if (obj.contact.length > 10) {
+                    return "";
+                  }
+                  dispatch({ type: "USERDETAILS", payload: obj })
+                }}
                 autoFocus
                 endContent={
                   <ContactIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
@@ -202,7 +251,7 @@ export const LoginModal = (props) => {
 export const PaymentModal = (props) => {
   const dispatch = useDispatch()
   const { onOpenChange } = props;
-  const {showPayModel, paymentMethod} = useSelector((state) => state);
+  const { showPayModel, paymentMethod } = useSelector((state) => state);
   return (
     <Modal
       isOpen={showPayModel}
@@ -292,9 +341,6 @@ export const SignUpModal = (props) => {
     } else if (contact && !mobilePattern.test(contact)) {
       isValid = false
       dispatch({ type: "ERROR", payload: { type: "contact", message: "Enter 10 digit mobile number" } })
-    } else if (!password) {
-      isValid = false
-      dispatch({ type: "ERROR", payload: { type: "password", message: "Enter password" } })
     } else {
       dispatch({ type: "ERROR", payload: "" })
     }
@@ -456,7 +502,12 @@ export const SignUpModal = (props) => {
                   isInvalid={error.type == "contact" ? true : false}
                   errorMessage={error.message}
                   value={userDetails.contact}
-                  onChange={(e) => setUserData(e.target.value, 'contact')}
+                  onChange={(e) => {
+                    if (e.target.value.length > 10) {
+                      return ""
+                    }
+                    setUserData(e.target.value, 'contact')
+                  }}
                   autoFocus
                   endContent={
                     <ContactIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
@@ -464,7 +515,7 @@ export const SignUpModal = (props) => {
                   label="Contact"
                   variant="bordered"
                 />
-                <Input
+                {/* <Input
                   isInvalid={error.type == "password" ? true : false}
                   type={isVisible ? "text" : "password"}
                   errorMessage={error.message}
@@ -482,7 +533,7 @@ export const SignUpModal = (props) => {
                   }
                   label="Password"
                   variant="bordered"
-                />
+                /> */}
               </ModalBody>
               <ModalFooter>
                 <Button style={{ background: "black", color: "white" }} onClick={verify}>

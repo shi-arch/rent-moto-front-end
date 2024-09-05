@@ -1,16 +1,14 @@
 'use client'
-//import { DatePicker } from "@nextui-org/date-picker";
-import DatePicker from "react-datepicker";
+import { DatePicker } from "@nextui-org/date-picker";
+//import DatePicker from "react-datepicker";
 import { TimeInput } from "@nextui-org/date-input";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { postApi } from "../app/response/api";
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
 import { Button } from "@nextui-org/button";
-
-import store from "../utils/store";
 import { Time, getLocalTimeZone, today, parseDate } from "@internationalized/date";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, User } from "@nextui-org/dropdown";
 import { apiCall, defaultVal, getDateTimeInput, isValid, TimeRangeArr } from "../utils/constants";
@@ -24,7 +22,7 @@ import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileBlackIcon, ProfileIc
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
     const { name, url, pricePerday, vehicleCount, accessChargePerKm, finalCharge, bookingCount } = props
-    const {selectedLocality, error} = useSelector((state) => state);
+    const { selectedLocality, error } = useSelector((state) => state);
     const router = useRouter()
     return (
         <Card className="max-w-[400px]">
@@ -161,6 +159,9 @@ export const ProfileDrop = () => {
             <DropdownMenu aria-label="Static Actions" disabledKeys={["name"]}>
                 <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData?.firstName + " " + loginData?.lastName}</span></DropdownItem>
                 <DropdownItem onClick={() => {
+                    router.push('/profile')
+                }} startContent={<ProfileBlackIcon />} key="copy">Profile</DropdownItem>
+                <DropdownItem onClick={() => {
                     localStorage.removeItem('loginData')
                     dispatch({ type: "USERDETAILS", payload: "" })
                     dispatch({ type: "ISLOGGEDIN", payload: false })
@@ -168,9 +169,6 @@ export const ProfileDrop = () => {
                     dispatch({ type: "TRIGGERAPI", payload: false })
                     router.push('/')
                 }} startContent={<LogOut />} key="copy">Logout</DropdownItem>
-                <DropdownItem onClick={() => {
-                    router.push('/profile')
-                }} startContent={<ProfileBlackIcon />} key="copy">Profile</DropdownItem>
 
             </DropdownMenu>
         </Dropdown>
@@ -299,26 +297,57 @@ export const TimerSelection = (props) => {
 
 export const DateSelection = (props) => {
     const { type, isBold } = props
+    const [value, setValue] = React.useState();
     const { startDate, endDate, filterString, error } = useSelector(state => state)
     const dispatch = useDispatch()
     const handleChange = (date) => {
         dispatch({ type: type, payload: date })
     }
+    useEffect(() => {
+        const valueStr = type == "ENDDATE" ? moment(endDate).format('YYYY-MM-DD') : moment(startDate).format('YYYY-MM-DD')
+        setValue(parseDate(valueStr))
+    }, [])
     return (
         <>
             <DatePicker
+                isInvalid={type == "ENDDATE" && error.type == "endDate"} errorMessage={type == "ENDDATE" && error.msg}
+                variant="bordered"
+                format="yyyy-MM-dd"
+                className="max-w-[284px]"
+                label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
+                value={value}
+                onChange={async (e) => {
+                    const valueStr = moment(await getDateTimeInput(type, e)).format('YYYY-MM-DD')
+                    setValue(parseDate(valueStr))
+                    isValid()
+                    dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: valueStr } })
+                }}
+            />
+            {/* <div style={{ border: '2px solid #e4e4e7', borderRadius: '10px', padding: "5px 15px", marginTop: "2px" }}>
+            <p style={{margin: "0", fontSize: "12px", color: "#52525b"}}>{type == "STARTDATE" ? "Pickup Date" : "Return Date"}</p>
+            <input style={{color: "#52525b", fontSize: "14px", width: "100%", fontWeight: "normal"}} type="date" value={type == "STARTDATE" ? moment(startDate).format('YYYY-MM-DD') : moment(endDate).format('YYYY-MM-DD')} onChange={(e) => handleChange(e.target.value)} />
+        </div>
+        <span style={{ color: "red", fontSize: "12px" }}>{type == "ENDDATE" && error.type == "endDate" && error.msg }</span>
+        <span style={{ color: "red", fontSize: "12px" }}>{type == "STARTDATE" && error.type == "startDate" && error.msg }</span> */}
+            {/* <DatePicker
+                //defaultValue={"02/10/1994"}
+                value={value}
+                variant="bordered"
+                format="DD MMM, YYYY"
+                label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
+                isInvalid={type == "STARTDATE" ? error.type == "startDate" : error.type == "endDate"}
+                errorMessage={type == "STARTDATE" ? error.msg : error.msg}
+                style={{ color: "#52525b", fontSize: "14px", width: "100%", fontWeight: "normal" }}
                 selected={type == "STARTDATE" ? startDate : endDate}
                 onChange={async (e) => {
                     const res = await getDateTimeInput(type, e)
                     isValid()
                     dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: res } })
                 }}
-                dateFormat="d MMM, yyyy"
+                dateFormat="YYYY-MM-DD"
                 minDate={new Date()}
                 customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('DD MMM, YYYY')} />}
-            />
-            <span style={{ color: "red", fontSize: "12px" }}>{type == "ENDDATE" && error.type == "endDate" && error.msg }</span>
-            <span style={{ color: "red", fontSize: "12px" }}>{type == "STARTDATE" && error.type == "startDate" && error.msg }</span>
+            /> */}
         </>
     )
 }

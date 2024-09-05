@@ -38,8 +38,10 @@ export default function Header() {
                         className="sm:hidden"
                     />
                     <NavbarBrand style={{ marginTop: "10px" }}>
-                        <AcmeLogo />
-                        <p className="font-bold text-inherit" style={{ marginTop: "16px" }}>RENTO</p>
+                        <Link style={{ color: "white", fontWeight: "bold" }} color="foreground" href="/" aria-current="page">
+                            <AcmeLogo />
+                            <p className="font-bold text-inherit" style={{ marginTop: "16px" }}>RENTO</p>
+                        </Link>
                     </NavbarBrand>
                 </NavbarContent>
                 <NavbarContent className="hidden sm:flex gap-4" justify="center" style={{ marginTop: "10px", color: "white" }}>
