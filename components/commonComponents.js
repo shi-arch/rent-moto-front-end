@@ -18,6 +18,7 @@ import { Skeleton } from "@nextui-org/skeleton";
 import Image from 'next/image'
 import './commonComponent.css'
 import { AddNoteIcon, Bookingicon, DateIcon, LogOut, ProfileBlackIcon, ProfileIcon, UserIcon } from "../utils/icons";
+import { parse } from "path";
 
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
@@ -175,6 +176,17 @@ export const ProfileDrop = () => {
     )
 }
 
+export const BookingDurationComp = (props) => {
+    const { label, onChecked } = props
+    const { filterString } = useSelector((state) => state)
+    return (
+        <div style={{ display: "flex" }}>
+            <input onChange={onChecked} checked={filterString.bookingDuration == label ? true : false} className='checkboxSpace' type="checkbox" />
+            <span>{label}</span>
+        </div>
+    )
+}
+
 const DropDown = () => {
     const [selectedKeys, setSelectedKeys] = useState("")
     const [defaultVal, setDefaultVal] = useState("saab")
@@ -196,7 +208,7 @@ const DropDown = () => {
 
     return (
         <>
-            <select style={{ height: "57px" }} className="form-select mobile-bot-space" defaultValue={defaultPickupLocation} onClick={async (e) => {
+            <select style={{ height: "57px" }} className="form-select mobile-bot-space" onChange={async (e) => {
                 const o = e.target.value
                 setSelectedKeys(o)
                 const filter = { ...filterString, pickupLocation: o }
@@ -206,7 +218,7 @@ const DropDown = () => {
             }} name="cars" id="cars">
                 {
                     subLocations && subLocations.length ? subLocations.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
+                        <option selected={o.label == filterString.pickupLocation ? true : false} key={o.value} value={o.value}>{o.label}</option>
                     )) : ""
                 }
             </select>
@@ -232,15 +244,12 @@ export const SubHeader = () => {
                                 </div>
                                 <div className="col-md-3">
                                     <DateSelection isBold={true} type={'STARTDATE'} />
-                                    {/* <DatePickerComponent type={'STARTDATE'} label="Pickup Date" defaultVal={startDate ? parseDate(moment(startDate).format('YYYY-MM-DD')) : null} /> */}
                                 </div>
                                 <div className="col-md-2 mobile-bot-space">
                                     <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
-                                    {/* <TimePickerComponent type={'STARTTIME'} errType={'startTime'} label={'Start Time'} defaultVal={new Time(startTime.hours, startTime.minutes)} /> */}
                                 </div>
                                 <div className="col-md-3">
                                     <DateSelection isBold={true} type={'ENDDATE'} />
-                                    {/* <DatePickerComponent type={'ENDDATE'} errType={'endDate'} label={'End Date'} defaultVal={endDate ? parseDate(moment(endDate).format('YYYY-MM-DD')) : null} /> */}
                                 </div>
                                 <div className="col-md-2 mobile-bot-space">
                                     <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
@@ -263,7 +272,9 @@ export const TimerSelection = (props) => {
     const filterString = useSelector(state => state.filterString)
     const dispatch = useDispatch();
     useEffect(() => {
-        apiCall()
+        if (window.location.pathname !== '/') {
+            apiCall()
+        }
     }, [filterString])
     return (
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
@@ -281,7 +292,7 @@ export const TimerSelection = (props) => {
                     disabledKeys={type == "STARTTIME" ? disabledKeys : []}
                     variant={'bordered'}
                     className="max-w-xs"
-                    defaultSelectedKeys={[type == "STARTTIME" ? startTime : endTime]}
+                    defaultSelectedKeys={[type == "STARTTIME" ? filterString.startTime : filterString.endTime]}
                 >
                     {TimeRangeArr.map((ele) => {
                         return <SelectItem key={ele}>
@@ -303,51 +314,22 @@ export const DateSelection = (props) => {
     const handleChange = (date) => {
         dispatch({ type: type, payload: date })
     }
-    useEffect(() => {
-        const valueStr = type == "ENDDATE" ? moment(endDate).format('YYYY-MM-DD') : moment(startDate).format('YYYY-MM-DD')
-        setValue(parseDate(valueStr))
-    }, [])
     return (
         <>
             <DatePicker
                 isInvalid={type == "ENDDATE" && error.type == "endDate"} errorMessage={type == "ENDDATE" && error.msg}
                 variant="bordered"
+                minValue={today(getLocalTimeZone())}
                 format="yyyy-MM-dd"
                 className="max-w-[284px]"
                 label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
-                value={value}
+                value={type == "STARTDATE" ? parseDate(moment(filterString.startDate).format('YYYY-MM-DD')) : parseDate(moment(filterString.endDate).format('YYYY-MM-DD'))}
                 onChange={async (e) => {
                     const valueStr = moment(await getDateTimeInput(type, e)).format('YYYY-MM-DD')
-                    setValue(parseDate(valueStr))
                     isValid()
                     dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: valueStr } })
                 }}
             />
-            {/* <div style={{ border: '2px solid #e4e4e7', borderRadius: '10px', padding: "5px 15px", marginTop: "2px" }}>
-            <p style={{margin: "0", fontSize: "12px", color: "#52525b"}}>{type == "STARTDATE" ? "Pickup Date" : "Return Date"}</p>
-            <input style={{color: "#52525b", fontSize: "14px", width: "100%", fontWeight: "normal"}} type="date" value={type == "STARTDATE" ? moment(startDate).format('YYYY-MM-DD') : moment(endDate).format('YYYY-MM-DD')} onChange={(e) => handleChange(e.target.value)} />
-        </div>
-        <span style={{ color: "red", fontSize: "12px" }}>{type == "ENDDATE" && error.type == "endDate" && error.msg }</span>
-        <span style={{ color: "red", fontSize: "12px" }}>{type == "STARTDATE" && error.type == "startDate" && error.msg }</span> */}
-            {/* <DatePicker
-                //defaultValue={"02/10/1994"}
-                value={value}
-                variant="bordered"
-                format="DD MMM, YYYY"
-                label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
-                isInvalid={type == "STARTDATE" ? error.type == "startDate" : error.type == "endDate"}
-                errorMessage={type == "STARTDATE" ? error.msg : error.msg}
-                style={{ color: "#52525b", fontSize: "14px", width: "100%", fontWeight: "normal" }}
-                selected={type == "STARTDATE" ? startDate : endDate}
-                onChange={async (e) => {
-                    const res = await getDateTimeInput(type, e)
-                    isValid()
-                    dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: res } })
-                }}
-                dateFormat="YYYY-MM-DD"
-                minDate={new Date()}
-                customInput={<CustomInput isBold={isBold} label={type == "STARTDATE" ? 'Start Date' : 'End Date'} value={moment(type == "STARTDATE" ? startDate : endDate).format('DD MMM, YYYY')} />}
-            /> */}
         </>
     )
 }
@@ -380,13 +362,17 @@ export const DatePickerComponent = (props) => {
     const filterString = useSelector(state => state.filterString)
     const dispatch = useDispatch()
     useEffect(() => {
-        apiCall()
+        if (window.location.pathname !== '/') {
+            apiCall()
+        }
     }, [filterString])
     return (
         <DatePicker
             isInvalid={error && error.type == errType}
             errorMessage={error && error.msg}
-            minValue={today(getLocalTimeZone())} defaultValue={defaultVal ? defaultVal : ""}
+            minValue={today(getLocalTimeZone())}
+            //minValue={today(getLocalTimeZone())} 
+            defaultValue={defaultVal ? defaultVal : ""}
             label={label}
             onChange={async (e) => {
                 const res = await getDateTimeInput(type, e)

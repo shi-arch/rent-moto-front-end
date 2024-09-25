@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { getApi } from './response/api';
 import { dispatchFunction, isValid, TimeRangeArr } from "../utils/constants";
+import {getLocalStream} from '../app/constant'
 import { parseDate } from "@internationalized/date";
 import { DatePickerComponent, DateSelection, Loading, TimerSelection } from "../components/commonComponents";
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -27,7 +28,11 @@ export default function Home() {
   const handleChange = date => {
     setSelectedDate(date);
   };
-  const { selectedCity, loading, disabledKeys, startTime, endTime, location, startDate, endDate, filterString } = useSelector(state => state)
+  const { selectedCity, loading, disabledKeys, startTime, endTime, location, startDate, endDate, filterString, daysCount } = useSelector(state => state)
+
+  useEffect(() => {
+    getLocalStream()
+  }, [filterString])
 
   useEffect(() => {
     (async () => {
@@ -46,7 +51,7 @@ export default function Home() {
           let time2 = new Date().getTime()
           if (time1 < time2) {
             isDisabled = true
-            arr.push(TimeRangeArr[i]) 
+            arr.push(TimeRangeArr[i])
           }
         }
         let lastVal = arr[arr.length - 1]
@@ -55,8 +60,8 @@ export default function Home() {
         let getStartDate = moment(new Date()).format('MM/DD/YYYY')
         let getEndDate = moment(new Date()).add(1, 'days').format('MM/DD/YYYY')
         let getEndTime = getStartTime
-        const filterObj = { pickupLocation: response.data[0].subLocation[1].label, location: response.data[0].myLocation, startDate: getStartDate, startTime: getStartTime, endDate: getEndDate, endTime: getEndTime, sort: "lowToHigh" }
-        const obj = { loginData: initialData, selectedLocality: response.data[0].subLocation[1].label, filterString: filterObj, startTime: getStartTime, startDate: getStartDate, endDate: getEndDate, endTime: getEndTime, disabledKeys: arr, citiesData: response.data, selectedCity: response.data[0] }
+        const filterObj = { pickupLocation: response.data[0].subLocation[0].label, location: response.data[0].myLocation, startDate: getStartDate, startTime: getStartTime, endDate: getEndDate, endTime: getEndTime, sort: "lowToHigh" }
+        const obj = { loginData: initialData, selectedLocality: response.data[0].subLocation[0].label, filterString: filterObj, startTime: getStartTime, startDate: getStartDate, endDate: getEndDate, endTime: getEndTime, disabledKeys: arr, citiesData: response.data, selectedCity: response.data[0] }
         await dispatchFunction(obj)
       }
     })()
@@ -103,7 +108,7 @@ export default function Home() {
                   </div>
                   <div className='row'>
                     <div className='col-md-6'>
-                    <DateSelection type={'ENDDATE'} />
+                      <DateSelection type={'ENDDATE'} />
                     </div>
                     <div className='col-md-6' style={{ alignContent: 'right' }}>
                       <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
@@ -111,7 +116,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="form-group">
-                  <p>Duration: 1 Day</p>
+                  <p>Duration: {daysCount} Day</p>
                 </div>
                 <button style={{ width: '100%', background: 'black' }} onClick={search} type="submit" className="btn btn-success btn-block form-control">Search</button>
               </div> : <Loading />

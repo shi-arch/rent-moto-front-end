@@ -134,7 +134,6 @@ export default function Page() {
               await postApi('/sendOtp', { email: loginData.email, invoice })
               const res = await postApi('/getUsersByContact', { contact: parseInt(loginData.contact) })
               if (res.status == 200) {
-                debugger
                 dispatch({ type: "LOGINDATA", payload: res.data })
               }
               router.push('/thankyou')

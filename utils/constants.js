@@ -50,6 +50,7 @@ export const dispatchFunction = async (obj) => {
     dispatch({ type: "LOGINDATA", payload: loginData })
     dispatch({ type: "ISLOGGEDIN", payload: loginData ? true : false })
     dispatch({ type: "FILTERSTRING", payload: filterString })
+    dispatch({ type: "INITIALFILTER", payload: filterString })
     dispatch({ type: "STARTTIME", payload: startTime })
     dispatch({ type: "STARTDATE", payload: startDate })
     dispatch({ type: "ENDDATE", payload: endDate })
@@ -63,8 +64,14 @@ export const defaultVals = "Please select the nearby location"
 
 export const apiCall = async () => {
     const dispatch = store.dispatch
-    const { filterString, triggerApi } = store.getState()
-    if (Object.keys(filterString).length && isValid() && triggerApi) {
+    const { filterString, prevFilterString } = store.getState()
+    let callApi = true
+    if(prevFilterString && prevFilterString == JSON.stringify(filterString)){
+        callApi = false
+    } else {
+        dispatch({type: "PREVFILTERSTRING", payload: JSON.stringify(filterString)})
+    }
+    if (Object.keys(filterString).length && isValid() && callApi) {
         dispatch({ type: "LOADING", payload: true })
         const result = await postApi('/searchVehicle', filterString)
         if (result) {

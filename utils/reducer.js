@@ -11,6 +11,8 @@ const initialState = {
   startDate: "",
   startTime: "",
   selectedVehicle: "",
+  hoursCount: "",
+  daysCount: 1,
   filterData: "",
   //endTime: { hours: 10, minutes: 0 },
   endTime: "",
@@ -33,12 +35,28 @@ const initialState = {
   vehicleName: "",
   selectedCity: "",
   selectedKeys: "",
-  defaultPickupLocation: "Please select the nearby location"
+  defaultPickupLocation: "",
+  bookingDuration: "",
+  bookingDurationList: [],
+  prevFilterString: "",
+  initialFilter: ""
 };
 
 const RootReducer = (state = initialState, action) => {
-  switch (action.type) {    
-    case 'PAYMENTMETHOD':
+  switch (action.type) {   
+    case 'INITIALFILTER':
+      return { ...state, initialFilter: action.payload }; 
+    case 'PREVFILTERSTRING':
+      return { ...state, prevFilterString: action.payload };
+      case 'BOOKINGDURATIONLIST':
+      return { ...state, bookingDurationList: action.payload };
+      case 'BOOKINGDURATION':
+      return { ...state, bookingDuration: action.payload };
+      case 'HOURSCOUNT':
+      return { ...state, hoursCount: action.payload };
+      case 'DAYSCOUNT':
+      return { ...state, daysCount: action.payload };
+      case 'PAYMENTMETHOD':
       return { ...state, paymentMethod: action.payload };
       case 'SELECTEDKEYS':
       return { ...state, selectedKeys: action.payload };
