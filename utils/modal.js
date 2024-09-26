@@ -140,10 +140,14 @@ export const OtpModal = (props) => {
                   isInvalid={error ? true : false}
                   errorMessage={error}
                   onChange={(e) => {
-                    if (e.target.value.length > 6) {
-                      return ""
+                    let val = parseInt(e.target.value)
+                    if(val){
+                      if (val.toString().length > 6) {
+                        return ""
+                      } else {
+                        setOtp(e.target.value)
+                      }
                     }
-                    setOtp(e.target.value)
                   }}
                   autoFocus
                   label="OTP"
@@ -220,11 +224,16 @@ export const LoginModal = (props) => {
                 errorMessage={error}
                 value={userDetails.contact}
                 onChange={(e) => {
-                  let obj = { ...userDetails, contact: e.target.value }
-                  if (obj.contact.length > 10) {
-                    return "";
-                  }
-                  dispatch({ type: "USERDETAILS", payload: obj })
+                  let val = parseInt(e.target.value)
+                  if(val){
+                    let obj = { ...userDetails, contact: val }
+                    if (val.toString().length > 10) {
+                      return "";
+                    }
+                    dispatch({ type: "USERDETAILS", payload: obj })
+                  } else {
+                    dispatch({ type: "USERDETAILS", payload: { ...userDetails, contact: "" } })
+                  }                  
                 }}
                 autoFocus
                 endContent={

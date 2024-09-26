@@ -226,6 +226,8 @@ const DropDown = () => {
     );
 }
 
+
+
 export const SubHeader = () => {
     const dispatch = useDispatch();
     const startDate = useSelector((state) => state.startDate);
@@ -270,15 +272,19 @@ export const TimerSelection = (props) => {
     const disabledKeys = useSelector(state => state.disabledKeys)
     const endTime = useSelector(state => state.endTime)
     const filterString = useSelector(state => state.filterString)
+    const [defaultKeys, setdefaultKeys]  = useState([])
     const dispatch = useDispatch();
     useEffect(() => {
-        if (window.location.pathname !== '/') {
-            apiCall()
+        if(type == "STARTTIME"){
+            setdefaultKeys([filterString.startTime])
+        }
+        if(type == "ENDTIME"){
+            setdefaultKeys([filterString.endTime])
         }
     }, [filterString])
     return (
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-            {
+            { defaultKeys.length ?
                 <Select
                     isInvalid={error && error.type == errType}
                     errorMessage={error && error.msg}
@@ -286,20 +292,20 @@ export const TimerSelection = (props) => {
                     onChange={async (e) => {
                         const res = await getDateTimeInput(type, e.target.value)
                         isValid()
-                        const ii = { ...filterString, [type == "STARTTIME" ? "startTime" : "endTime"]: res }
                         dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTTIME" ? "startTime" : "endTime"]: res } })
                     }}
                     disabledKeys={type == "STARTTIME" ? disabledKeys : []}
                     variant={'bordered'}
                     className="max-w-xs"
-                    defaultSelectedKeys={[type == "STARTTIME" ? filterString.startTime : filterString.endTime]}
+                    selectedKeys={defaultKeys}
+                    defaultSelectedKeys={defaultKeys}
                 >
-                    {TimeRangeArr.map((ele) => {
-                        return <SelectItem key={ele}>
+                    {TimeRangeArr.map((ele, i) => {
+                        return <SelectItem selected={i == 0} key={ele}>
                             {ele}
                         </SelectItem>
                     })}
-                </Select>
+                </Select> : ""
             }
 
         </div>

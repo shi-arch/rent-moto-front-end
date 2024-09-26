@@ -19,7 +19,7 @@ export default function Page() {
   const router = useRouter()
   const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = useSelector(state => state.selectedVehicle)
   const { myLocation } = useSelector(state => state.selectedCity)
-  const { startDate, endDate, startTime, endTime, selectedLocality, filterString, loading, loginData } = useSelector(state => state)
+  const { startDate, endDate, startTime, endTime, selectedLocality, filterString, loading, loginData, totalTripHours } = useSelector(state => state)
   const [cgst, setCgst] = useState(0)
   const [vehicleRentalCost, setVehicleRentalCost] = useState(0)
   const [totalAmount, setTotalAmount] = useState(0)
@@ -40,18 +40,11 @@ export default function Page() {
   }, [pricePerDayCal])
 
   useEffect(() => {
-    let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
-    let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()
-    let startDateHours = moment(startDate).add(startTimeHours, 'hours')
-    let endDateHours = moment(endDate).add(endTimeHours, 'hours')
-    var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
-    let settingHours = Math.trunc(estHours / 3600000)
-    setHours(settingHours)
     let dayCountMult = pricePerday
-    if(settingHours > 24){
-      dayCountMult = Math.trunc(settingHours / 24) * pricePerday
-      if(settingHours % 24 > 0){
-        dayCountMult = (Math.trunc(settingHours / 24) + 1) * pricePerday
+    if(totalTripHours > 24){
+      dayCountMult = Math.trunc(totalTripHours / 24) * pricePerday
+      if(totalTripHours % 24 > 0){
+        dayCountMult = (Math.trunc(totalTripHours / 24) + 1) * pricePerday
       }      
     }
     setVehicleRentalCost(dayCountMult)
@@ -118,7 +111,6 @@ export default function Page() {
           cloneBooking.push(updatBookingObj)
           data.bookings = cloneBooking
           localStorage.setItem("loginData", JSON.stringify(data))
-
         }
         const result = await postApi('/searchVehicle', filterString)
         if (result) {

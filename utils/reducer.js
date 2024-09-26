@@ -44,6 +44,8 @@ const initialState = {
 
 const RootReducer = (state = initialState, action) => {
   switch (action.type) {   
+    case 'TOTALTRIPHOURS':
+      return { ...state, totalTripHours: action.payload }; 
     case 'INITIALFILTER':
       return { ...state, initialFilter: action.payload }; 
     case 'PREVFILTERSTRING':

@@ -7,7 +7,7 @@ import { BikeCard, Loading, SubHeader, BookingDurationComp } from '../../compone
 import { Select, SelectItem, useSelect } from "@nextui-org/select";
 import { getApi, postApi } from '../response/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { apiCall, brands, categories, defaultVal, dispatchFunction, sortArr } from '../../utils/constants';
+import { apiCall, brands, categories, defaultVal, dispatchFunction, initialCall, sortArr } from '../../utils/constants';
 import { CitiesModal } from '../../utils/modal';
 import { getLocalStream, durationArr } from '../../app/constant'
 import { Button } from '@nextui-org/button';
@@ -17,30 +17,42 @@ export default function Page() {
   const dispatch = useDispatch()
   const data = useSelector(state => state.vehicleData)
   const selectedCity = useSelector(state => state.selectedCity)
-  const startDate = useSelector(state => state.startDate)
   const loading = useSelector(state => state.loading)
   const defaultPickupLocation = useSelector((state) => state.defaultPickupLocation);
-  const endDate = useSelector(state => state.endDate)
   const filterString = useSelector(state => state.filterString)
   const defaultBrand = useSelector(state => state.defaultBrand)
   const defaultPrice = useSelector(state => state.defaultPrice)
   const filterData = useSelector(state => state.filterData)
   const vehicleName = useSelector(state => state.vehicleName)
   const triggerApi = useSelector(state => state.triggerApi)
-  const { initialFilter, bookingDurationList } = useSelector(state => state)
+  const { initialFilter, bookingDurationList, totalTripHours } = useSelector(state => state)
+  const { startDate, endDate, startTime, endTime } = useSelector(state => state.filterString)
 
   useEffect(() => {
     getLocalStream()
   }, [filterString])
 
+
   useEffect(() => {
     (async () => {
+      await initialCall()
       const response = await getApi("/getAllBookingDuration")
       if (response && response.data) {
         dispatch({ type: "BOOKINGDURATIONLIST", payload: response.data })
-      }
+      }      
     })()
   }, [])
+
+  useEffect(() => {
+    if(filterString.startTime){
+      let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
+      let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()
+      let startDateHours = moment(startDate).add(startTimeHours, 'hours')
+      let endDateHours = moment(endDate).add(endTimeHours, 'hours')
+      var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
+      dispatch({ type: "TOTALTRIPHOURS", payload: Math.trunc(estHours / 3600000) })
+    }    
+  }, [filterString])
 
   useEffect(() => {
     (async () => {
@@ -50,11 +62,11 @@ export default function Page() {
       }
     })()
   }, [filterData])
-  
+
   const filter = async (clear) => {
     let str = filterString
     if (clear == 'clear') {
-      str = { location: selectedCity.myLocation}
+      str = { location: selectedCity.myLocation }
       defaultPickupLocation
       dispatch({ type: "FILTERSTRING", payload: initialFilter })
       dispatch({ type: "DEFAULTBRAND", payload: defaultBrand })
@@ -75,12 +87,6 @@ export default function Page() {
     dispatch({ type: "FILTERDATA", payload: name })
     dispatch({ type: "FILTERSTRING", payload: filterString })
   }
-
-  useEffect(() => {
-    if(filterString){
-      //debugger
-    }
-  }, [filterString])
 
   return (
     <div className='container'>
@@ -130,35 +136,41 @@ export default function Page() {
                       let bookingStartHours = new Date(moment(startTime, "hh:mm A")).getHours()
                       let bookingStartMinutes = new Date(moment(startTime, "hh:mm A")).getMinutes()
                       let bookingStartDate = ""
+                      let amount = 0
                       if (ele.bookingDuration.label == "Weekly Package") {
                         bookingStartDate = moment(startDate).add(1, 'week').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                        amount = 12000
                       } else if (ele.bookingDuration.label == "3 Hours Package") {
-                        bookingStartDate = moment(startDate).add(3, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 3, 'hours').add(bookingStartMinutes, 'minutes')
+                        amount = 6000
                       } else if (ele.bookingDuration.label == "6 Hours Package") {
-                        bookingStartDate = moment(startDate).add(6, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        amount = 8000
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 6, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "Half Day Package") {
-                        bookingStartDate = moment(startDate).add(12, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        amount = 9000
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 12, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "Daily Package") {
-                        bookingStartDate = moment(startDate).add(24, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        amount = 10000
+                        bookingStartDate = moment(startDate).add(1, 'day').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "15 Days Package") {
-                        bookingStartDate = moment(startDate).add(15, 'days').add(bookingStartMinutes, 'minutes')                        
+                        amount = 16000
+                        bookingStartDate = moment(startDate).add(15, 'days').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "Monthly Package") {
-                        bookingStartDate = moment(startDate).add(1, 'month').add(bookingStartMinutes, 'minutes')                        
+                        amount = 30000
+                        bookingStartDate = moment(startDate).add(1, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "3 Months Package") {
-                        bookingStartDate = moment(startDate).add(3, 'month').add(bookingStartMinutes, 'minutes')                        
+                        amount = 90000
+                        bookingStartDate = moment(startDate).add(3, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "6 Months Package") {
-                        bookingStartDate = moment(startDate).add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        amount = 100000
+                        bookingStartDate = moment(startDate).add(6, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       } else if (ele.bookingDuration.label == "Yearly Package") {
-                        bookingStartDate = moment(startDate).add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')                        
+                        amount = 170000
+                        bookingStartDate = moment(startDate).add(1, 'year').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                       }
-                      const tee = {
-                        ...filterString, bookingDuration: ele.bookingDuration.label,
-                        endDate: moment(bookingStartDate).format('MM/DD/YYYY'), endTime: moment(bookingStartDate).format('hh:mm A')
-                      }
-                      debugger
                       dispatch({
                         type: "FILTERSTRING", payload: {
-                          ...filterString, bookingDuration: ele.bookingDuration.label,
+                          ...filterString, bookingDuration: ele.bookingDuration.label, selectedAmount: amount,
                           endDate: moment(bookingStartDate).format('MM/DD/YYYY'), endTime: moment(bookingStartDate).format('hh:mm A')
                         }
                       })
@@ -222,8 +234,19 @@ export default function Page() {
         <div className='col-md-9'>
           <div className='row' style={{ textAlign: "center", marginBottom: "20px" }}>
             {
-              data && data.length ? data.map((card, index) => {
-                const finalCharge = card.pricePerday * .18 + parseInt(card.pricePerday)
+              data && data.length ? data.map((card, index) => {                
+                let price = card.pricePerday * .18 + parseInt(card.pricePerday)
+                let finalCharge = price
+                if(filterString.selectedAmount){
+                  finalCharge = filterString.selectedAmount
+                } else {
+                  if(totalTripHours > 24){
+                    finalCharge = Math.trunc(totalTripHours / 24) * price
+                  }                  
+                }
+                debugger
+                //Math.trunc(totalTripHours / 24) * price
+                //finalCharge = filterString.selectedAmount ? filterString.selectedAmount : price * .18 + parseInt(card.pricePerday)
                 return <div key={index} className='col-md-4'>
                   <div style={{ marginTop: "20px", textAlign: "center" }}>
                     <BikeCard key={index} {...card} finalCharge={finalCharge} />
