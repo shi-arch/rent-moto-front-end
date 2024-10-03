@@ -12,15 +12,23 @@ import { CitiesModal } from '../../utils/modal';
 
 export default function Page() {
   const dispatch = useDispatch()
-  const {paymentMethod} = useSelector((state) => state);
+  const { paymentMethod } = useSelector((state) => state);
   const [amount, setTotalAmount] = useState(0)
-  const { name, vehicleNumber, _id, vehicleCount, pricePerday } = useSelector(state => state.selectedVehicle)
-  const { myLocation } = useSelector(state => state.selectedCity)
-  const { startDate, endDate, startTime, endTime, selectedLocality } = useSelector(state => state)
+  const { name, vehicleNumber, _id, pricePerday, url } = useSelector(state => state.selectedVehicle)
+  const { contact, email, firstName, lastName } = useSelector(state => state.loginData)  
+  const { endDate, endTime, startDate, startTime, pickupLocation, location } = useSelector(state => state.filterString)
+  const {} = useSelector(state => state)
   useEffect(() => {
-    let price = pricePerday * 0.14
-    let total = parseInt(pricePerday) + price * 2
-    setTotalAmount(total.toFixed())
+    (async () => {
+      const obj = {
+        vehicleNumber, vehicleName:  name, endDate, endTime, startDate, startTime, pickupLocation, location, vehicleImage: url,
+        paymentStatus: "paid", paymentMethod, userName: firstName + " " + lastName, email, contact, submittedDocument: "Pan Card"
+      }
+      postApi('/createOrder', obj)      
+      let price = pricePerday * 0.14
+      let total = parseInt(pricePerday) + price * 2
+      setTotalAmount(total.toFixed())
+    })()
   }, [])
   return (
     <div className='container'>
@@ -51,7 +59,7 @@ export default function Page() {
             <p><span style={{ fontWeight: '700' }}> Total Booking Amount</span> <label htmlFor="name" style={{ float: "right" }}>{amount}</label></p>
             <p><span style={{ fontWeight: '700' }}> Payment Method</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod}</label></p>
             <p><span style={{ fontWeight: '700' }}> Payment Status</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod == "Online" ? "Completed" : "Pending"}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Location</span> <label htmlFor="name" style={{ float: "right" }}>{myLocation + ", " + selectedLocality}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Location</span> <label htmlFor="name" style={{ float: "right" }}>{location + ", " + pickupLocation}</label></p>
           </CardBody>
         </Card>
       </div>
