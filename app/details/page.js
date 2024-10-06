@@ -19,10 +19,8 @@ export default function Page() {
   const router = useRouter()
   const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = useSelector(state => state.selectedVehicle)
   const { myLocation } = useSelector(state => state.selectedCity)
-  const { startDate, endDate, startTime, endTime, selectedLocality, filterString, loading, loginData, totalTripHours } = useSelector(state => state)
-  const [cgst, setCgst] = useState(0)
-  const [vehicleRentalCost, setVehicleRentalCost] = useState(0)
-  const [totalAmount, setTotalAmount] = useState(0)
+  const { selectedLocality, filterString, loading, loginData, totalTripHours, totalPrice, paymentDetails } = useSelector(state => state)
+  const { startDate, endDate, startTime, endTime, finalCharge } = useSelector(state => state.filterString)
   const { paymentMethod } = useSelector((state) => state);
   const [licenceCheck, setLicenceCheck] = useState(false)
   const [ageCheck, setAgeCheck] = useState(false)
@@ -31,23 +29,6 @@ export default function Page() {
   const [invoice, setInvoice] = useState("")
 
   useEffect(() => {
-    if(pricePerDayCal && vehicleRentalCost){
-      let price = vehicleRentalCost * 0.14
-      setCgst(price.toFixed())
-      let total = parseInt(vehicleRentalCost) + price * 2
-      setTotalAmount(total.toFixed())
-    }    
-  }, [pricePerDayCal])
-
-  useEffect(() => {
-    let dayCountMult = pricePerday
-    if(totalTripHours > 24){
-      dayCountMult = Math.trunc(totalTripHours / 24) * pricePerday
-      if(totalTripHours % 24 > 0){
-        dayCountMult = (Math.trunc(totalTripHours / 24) + 1) * pricePerday
-      }      
-    }
-    setVehicleRentalCost(dayCountMult)
     setPricePerDayCal(true)
     if (loginData) {
       let loginStr = loginData
@@ -67,11 +48,10 @@ export default function Page() {
 
   const updatePaybleAmount = (e) => {
     const { checked } = e.target
-    let amt = JSON.parse(totalAmount)
     if (checked) {
-      setTotalAmount(amt + 50)
+      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount + 50}})
     } else {
-      setTotalAmount(amt - 50)
+      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount - 50}})
     }
   }
 
@@ -92,8 +72,9 @@ export default function Page() {
           endTime: endTime
         },
         vehicleNumber,
-        bookingAmount: totalAmount
+        bookingAmount: paymentDetails.payableAmount
       }
+      debugger
       const res = await postApi('/booking', obj)
       if (res) {
         const updatBookingObj = {
@@ -107,7 +88,10 @@ export default function Page() {
         const getData = localStorage.getItem('loginData')
         if(getData){
           const data = JSON.parse(localStorage.getItem("loginData"))
-          const cloneBooking = [...data.bookings]
+          let cloneBooking = []
+          if(data && data.bookings){
+            cloneBooking = [...data.bookings]
+          }          
           cloneBooking.push(updatBookingObj)
           data.bookings = cloneBooking
           localStorage.setItem("loginData", JSON.stringify(data))
@@ -180,7 +164,7 @@ export default function Page() {
                     <div style={{ marginLeft: "auto", display: "flex" }}>
                       <span style={{ fontWeight: "bold" }}>{vehicleCount}</span> <span style={{ marginLeft: "2px" }}>Left</span>
                     </div>
-                    <h5 className="mobile-price" style={{ marginLeft: "auto", display: "none" }}>₹ {pricePerday}</h5>
+                    <h5 className="mobile-price" style={{ marginLeft: "auto", display: "none" }}>₹ {finalCharge}</h5>
                   </div>
                   <p style={{ display: "flex", marginLeft: "-10px" }}><LocateIcon />  <label htmlFor="name">Pickup location</label></p>
                   <p style={{ marginTop: "-15px", fontWeight: "bold", marginLeft: "40px", fontSize: "14px" }}>{selectedLocality}</p>
@@ -212,15 +196,15 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ display: "flex", marginTop: "10px", marginBottom: "10px" }}>
-                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration in <span style={{ fontWeight: "bold" }}>{hours} Hours</span></label>
+                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration in <span style={{ fontWeight: "bold" }}>{totalTripHours} Hours</span></label>
                   </div>
                   <div style={{ display: "flex" }}>
                     <RouteIcon />  <label htmlFor="name">Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>
                   </div>
-                  <p style={{ marginTop: "15px" }}>Vehicle number  <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
+                  <p style={{ marginTop: "15px" }}>Vehicle number ss   <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
                 </div>
                 <div className='col-md-3 mobile-price-hide' style={{ textAlign: "right" }}>
-                  <h5>₹ {pricePerday}</h5>
+                  <h5>₹ {finalCharge}</h5>
                 </div>
 
               </div>
@@ -238,14 +222,14 @@ export default function Page() {
             </CardHeader>
             <hr />
             <CardBody>
-              <p>Vehicle Rental Cost <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
-              <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {vehicleRentalCost}</label></p>
-              <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
-              <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {cgst}</label></p>
+              <p>Vehicle Rental Cost (per day) <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
+              <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.finalCharge}</label></p>
+              <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.sgst.toFixed()}</label></p>
+              <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.sgst.toFixed()}</label></p>
             </CardBody>
             <hr />
             <CardFooter style={{ display: "block" }}>
-              <p style={{ marginBottom: "40px" }}>Payable Amount <label htmlFor="name" style={{ float: "right" }}>₹ {totalAmount}</label></p>
+              <p style={{ marginBottom: "40px" }}>Payable Amount <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.payableAmount}</label></p>
               <div style={{ background: "#ffeccc", margin: "-16px", padding: "13px" }}>
                 <div style={{ marginBottom: "20px" }}>
                   <div style={{ display: "flex" }}>

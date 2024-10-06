@@ -64,9 +64,6 @@ export default function Page() {
     } else if (contact && !mobilePattern.test(contact)) {
       isValid = false
       dispatch({ type: "ERROR", payload: { type: "contact", message: "Enter 10 digit mobile number" } })
-    } else if (!password) {
-      isValid = false
-      dispatch({ type: "ERROR", payload: { type: "password", message: "Enter password" } })
     } else {
       dispatch({ type: "ERROR", payload: "" })
     }
@@ -104,7 +101,7 @@ export default function Page() {
     }
   }
   useEffect(() => {
-    if (bookings.length) {
+    if (bookings && bookings.length) {
       const obj = {
         upComingBookings: [],
         completedBookings: [],
@@ -112,23 +109,26 @@ export default function Page() {
       }
       const currentTime = new Date().getTime()
       for (let i = 0; i < bookings.length; i++) {
-        let { startDate, startTime } = bookings[i].bookingData.BookingStartDateAndTime
-        let { endDate, endTime } = bookings[i].bookingData.BookingEndDateAndTime
-        let bookingStartHours = new Date(moment(startTime, "hh:mm A")).getHours()
-        let bookingStartMinutes = new Date(moment(startTime, "hh:mm A")).getMinutes()
-        let bookingEndHours = new Date(moment(endTime, "hh:mm A")).getHours()
-        let bookingEndMinutes = new Date(moment(endTime, "hh:mm A")).getMinutes()
-        let bookingStartDate = moment(startDate).add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
-        let bookingEndDate = moment(endDate).add(bookingEndHours, 'hours').add(bookingEndMinutes, 'minutes')
-        bookingEndDate = new Date(bookingEndDate.format()).getTime()
-        bookingStartDate = new Date(bookingStartDate.format()).getTime()
-        if (bookingStartDate > currentTime) {
-          obj.upComingBookings.push(bookings[i])
-        } else if (currentTime > bookingStartDate && currentTime < bookingEndDate) {
-          obj.currentBookings.push(bookings[i])
-        } else {
-          obj.completedBookings.push(bookings[i])
-        }
+        if(bookings[i].bookingData && bookings[i].bookingData.BookingStartDateAndTime){
+          let { startDate, startTime } = bookings[i].bookingData.BookingStartDateAndTime
+          let { endDate, endTime } = bookings[i].bookingData.BookingEndDateAndTime
+          let bookingStartHours = new Date(moment(startTime, "hh:mm A")).getHours()
+          let bookingStartMinutes = new Date(moment(startTime, "hh:mm A")).getMinutes()
+          let bookingEndHours = new Date(moment(endTime, "hh:mm A")).getHours()
+          let bookingEndMinutes = new Date(moment(endTime, "hh:mm A")).getMinutes()
+          let bookingStartDate = moment(startDate).add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+          let bookingEndDate = moment(endDate).add(bookingEndHours, 'hours').add(bookingEndMinutes, 'minutes')
+          bookingEndDate = new Date(bookingEndDate.format()).getTime()
+          bookingStartDate = new Date(bookingStartDate.format()).getTime()
+          debugger 
+          if (bookingStartDate > currentTime) {
+            obj.upComingBookings.push(bookings[i])
+          } else if ( bookingStartDate < currentTime && currentTime < bookingEndDate) {
+            obj.currentBookings.push(bookings[i])
+          } else {
+            obj.completedBookings.push(bookings[i])
+          }
+        }        
       }
       setCustBookingData(obj)
     }
@@ -234,27 +234,6 @@ export default function Page() {
                         variant="bordered"
                       />
                     </div>
-                    <div style={{ margin: "20px 0px" }}>
-                      <Input
-                        isInvalid={error.type == "password" ? true : false}
-                        type={isVisible ? "text" : "password"}
-                        errorMessage={error.message}
-                        value={userDetails.password}
-                        onChange={(e) => setUserData(e.target.value, 'password')}
-                        autoFocus
-                        endContent={
-                          <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                            {isVisible ? (
-                              <EyeSlashFilledIcon />
-                            ) : (
-                              <EyeFilledIcon />
-                            )}
-                          </button>
-                        }
-                        label="Password"
-                        variant="bordered"
-                      />
-                    </div>
                     <Button style={{ background: "black", color: "white" }} onClick={verify}>
                       Update
                     </Button>
@@ -279,7 +258,7 @@ export default function Page() {
                     <div className='row' style={{ textAlign: 'center', display: "flex" }}>
                       {
                         bookingTabName == "upcoming" ?
-                        custBookingData && custBookingData.upComingBookings ?
+                        custBookingData && custBookingData.upComingBookings && custBookingData.upComingBookings.length ?
                         custBookingData.upComingBookings.map((obj) => {
                           const { bookingData, vehicleData } = obj
                           const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
@@ -296,7 +275,7 @@ export default function Page() {
                                     </div>
                                     <div className='col-md-8'>
                                       <h6 style={{ color: '#e03546', marginLeft: 'auto' }}>{name}</h6>
-                                      <label>Booking ID : <span style={{ color: '#e03546' }}>{_id.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
+                                      <label>Booking ID : <span style={{ color: '#e03546' }}>{_id?.substr(0, 8)}</span> | Vehicle Number : <span style={{ color: '#e03546' }}>{vehicleNumber}</span> </label>
                                       <label>Pickup Location : <span style={{ color: '#e03546' }}>{pickupLocation}</span> | City: <span style={{ color: '#e03546' }}>{location}</span> </label>
                                       <label>Pickup Time : <span style={{ color: '#e03546' }}>{BookingStartDateAndTime.startTime}</span> | Drop Time : <span style={{ color: '#e03546' }}>{BookingEndDateAndTime.endTime}</span> </label>
                                       <label>Drop Date : <span style={{ color: '#e03546' }}>{moment(BookingEndDateAndTime.endDate).format('D MMM, YYYY')}</span> | Pickup Date : <span style={{ color: '#e03546' }}>{moment(BookingStartDateAndTime.startDate).format('D MMM, YYYY')}</span> </label>
@@ -311,7 +290,7 @@ export default function Page() {
                       }
                       {
                         bookingTabName == "current" ?
-                        custBookingData && custBookingData.currentBookings ?
+                        custBookingData && custBookingData.currentBookings && custBookingData.currentBookings.length ?
                         custBookingData.currentBookings.map((obj) => {
                           const { bookingData, vehicleData } = obj
                           const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData
@@ -343,7 +322,7 @@ export default function Page() {
                       }
                       {
                         bookingTabName == "completed" ?
-                        custBookingData && custBookingData.completedBookings ?
+                        custBookingData && custBookingData.completedBookings && custBookingData.completedBookings.length ?
                         custBookingData.completedBookings.map((obj) => {
                           const { bookingData, vehicleData } = obj
                           const { brand, distanceLimit, name, pricePerday, transmissionType, url } = vehicleData

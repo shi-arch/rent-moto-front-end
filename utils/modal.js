@@ -524,25 +524,6 @@ export const SignUpModal = (props) => {
                   label="Contact"
                   variant="bordered"
                 />
-                {/* <Input
-                  isInvalid={error.type == "password" ? true : false}
-                  type={isVisible ? "text" : "password"}
-                  errorMessage={error.message}
-                  value={userDetails.password}
-                  onChange={(e) => setUserData(e.target.value, 'password')}
-                  autoFocus
-                  endContent={
-                    <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-                      {isVisible ? (
-                        <EyeSlashFilledIcon />
-                      ) : (
-                        <EyeFilledIcon />
-                      )}
-                    </button>
-                  }
-                  label="Password"
-                  variant="bordered"
-                /> */}
               </ModalBody>
               <ModalFooter>
                 <Button style={{ background: "black", color: "white" }} onClick={verify}>

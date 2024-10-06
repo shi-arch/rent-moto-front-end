@@ -23,7 +23,7 @@ import { parse } from "path";
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
     const { name, url, pricePerday, vehicleCount, accessChargePerKm, finalCharge, bookingCount } = props
-    const { selectedLocality, error } = useSelector((state) => state);
+    const { selectedLocality, error, filterString, totalTripHours } = useSelector((state) => state);
     const router = useRouter()
     return (
         <Card className="max-w-[400px]">
@@ -46,13 +46,16 @@ export const BikeCard = (props) => {
                 <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
                 <hr style={{ marginTop: "14px 0px" }} />
                 <div style={{ display: "flex" }}>
-                    <div style={{ fontWeight: "700" }}>₹ {finalCharge.toFixed()}</div>
+                    <div style={{ fontWeight: "700" }}>₹ {finalCharge}</div>
                     <div style={{ marginLeft: "auto" }}>
                         {
                             vehicleCount !== 0 ?
                                 <button style={{ width: '100%', background: 'black' }} onClick={() => {
                                     dispatch({ type: "SELECTEDVEHICLE", payload: props })
                                     dispatch({ type: "TRIGGERAPI", payload: false })
+                                    let sgst = finalCharge*.14
+                                    dispatch({ type: "PAYMENTDETAILS", payload: {sgst, finalCharge, payableAmount: sgst*2 + JSON.parse(finalCharge)}})
+                                    dispatch({ type: "FILTERSTRING", payload: { ...filterString, finalCharge: JSON.parse(finalCharge) } })
                                     router.push('/details')
                                 }} type="submit" disabled={vehicleCount == 0 || error?.msg ? true : false || !selectedLocality} className="btn btn-success btn-block form-control">Rent Now</button> :
                                 ""
@@ -272,19 +275,19 @@ export const TimerSelection = (props) => {
     const disabledKeys = useSelector(state => state.disabledKeys)
     const endTime = useSelector(state => state.endTime)
     const filterString = useSelector(state => state.filterString)
-    const [defaultKeys, setdefaultKeys]  = useState([])
+    const [defaultKeys, setdefaultKeys] = useState([])
     const dispatch = useDispatch();
     useEffect(() => {
-        if(type == "STARTTIME"){
+        if (type == "STARTTIME") {
             setdefaultKeys([filterString.startTime])
         }
-        if(type == "ENDTIME"){
+        if (type == "ENDTIME") {
             setdefaultKeys([filterString.endTime])
         }
     }, [filterString])
     return (
         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-            { defaultKeys.length ?
+            {defaultKeys.length ?
                 <Select
                     isInvalid={error && error.type == errType}
                     errorMessage={error && error.msg}

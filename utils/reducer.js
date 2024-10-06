@@ -39,12 +39,16 @@ const initialState = {
   bookingDuration: "",
   bookingDurationList: [],
   prevFilterString: "",
-  initialFilter: ""
+  initialFilter: "",
+  totalPrice: 0,
+  paymentDetails: {}
 };
 
 const RootReducer = (state = initialState, action) => {
   switch (action.type) {   
-    case 'TOTALTRIPHOURS':
+    case 'PAYMENTDETAILS':
+      return { ...state, paymentDetails: action.payload }; 
+      case 'TOTALTRIPHOURS':
       return { ...state, totalTripHours: action.payload }; 
     case 'INITIALFILTER':
       return { ...state, initialFilter: action.payload }; 

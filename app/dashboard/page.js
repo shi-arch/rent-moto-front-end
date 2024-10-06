@@ -39,19 +39,19 @@ export default function Page() {
       const response = await getApi("/getAllBookingDuration")
       if (response && response.data) {
         dispatch({ type: "BOOKINGDURATIONLIST", payload: response.data })
-      }      
+      }
     })()
   }, [])
 
   useEffect(() => {
-    if(filterString.startTime){
+    if (filterString.startTime) {
       let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
       let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()
       let startDateHours = moment(startDate).add(startTimeHours, 'hours')
       let endDateHours = moment(endDate).add(endTimeHours, 'hours')
       var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
       dispatch({ type: "TOTALTRIPHOURS", payload: Math.trunc(estHours / 3600000) })
-    }    
+    }
   }, [filterString])
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function Page() {
                       let bookingStartDate = ""
                       let amount = 0
                       if (ele.bookingDuration.label == "Weekly Package") {
-                        bookingStartDate = moment(startDate).add(1, 'week').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                        bookingStartDate = moment(startDate).add(7, 'days').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
                         amount = 12000
                       } else if (ele.bookingDuration.label == "3 Hours Package") {
                         bookingStartDate = moment(startDate).add(bookingStartHours + 3, 'hours').add(bookingStartMinutes, 'minutes')
@@ -216,17 +216,6 @@ export default function Page() {
                 </select>
               </CardBody>
             </Card>
-            {/* <Card className="max-w-[400px]" style={{ marginTop: "20px" }}>
-              <CardHeader className="flex gap-3">Search by name</CardHeader>
-              <CardBody>
-                <input type='text' value={vehicleName} className="form controll" onChange={async (e) => {
-                  const { value } = e.target
-                  const str = { ...filterString, name: value }
-                  dispatch({ type: "FILTERSTRING", payload: str })
-                  dispatch({ type: "VEHICLENAME", payload: value })
-                }} style={{ padding: "11px" }} placeholder="Search by name" />
-              </CardBody>
-            </Card> */}
             <button style={{ width: '100%', margin: "20px 0px", background: "#e03546", border: "none" }} onClick={() => filter('clear')} type="submit" className="btn btn-success btn-block form-control">Reset filter</button>
           </div>
 
@@ -234,19 +223,20 @@ export default function Page() {
         <div className='col-md-9'>
           <div className='row' style={{ textAlign: "center", marginBottom: "20px" }}>
             {
-              data && data.length ? data.map((card, index) => {                
-                let price = card.pricePerday * .18 + parseInt(card.pricePerday)
-                let finalCharge = price
-                if(filterString.selectedAmount){
+              data && data.length ? data.map((card, index) => {
+                let finalCharge = ""
+                if (filterString.selectedAmount) {
                   finalCharge = filterString.selectedAmount
                 } else {
-                  if(totalTripHours > 24){
-                    finalCharge = Math.trunc(totalTripHours / 24) * price
-                  }                  
+                  let dayCountMult = card.pricePerday
+                  if (totalTripHours > 24) {
+                    dayCountMult = Math.trunc(totalTripHours / 24) * card.pricePerday
+                    if (totalTripHours % 24 > 0) {
+                      dayCountMult = (Math.trunc(totalTripHours / 24) + 1) * card.pricePerday
+                    }
+                  }
+                  finalCharge = dayCountMult
                 }
-                debugger
-                //Math.trunc(totalTripHours / 24) * price
-                //finalCharge = filterString.selectedAmount ? filterString.selectedAmount : price * .18 + parseInt(card.pricePerday)
                 return <div key={index} className='col-md-4'>
                   <div style={{ marginTop: "20px", textAlign: "center" }}>
                     <BikeCard key={index} {...card} finalCharge={finalCharge} />
