@@ -224,8 +224,8 @@ export default function Page() {
             <CardBody>
               <p>Vehicle Rental Cost (per day) <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
               <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.finalCharge}</label></p>
-              <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.sgst.toFixed()}</label></p>
-              <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.sgst.toFixed()}</label></p>
+              <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails?.sgst?.toFixed()}</label></p>
+              <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails?.sgst?.toFixed()}</label></p>
             </CardBody>
             <hr />
             <CardFooter style={{ display: "block" }}>
