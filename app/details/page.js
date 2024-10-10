@@ -17,9 +17,9 @@ import { PaymentModal } from '../../utils/modal';
 export default function Page() {
   const dispatch = useDispatch()
   const router = useRouter()
-  const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = useSelector(state => state.selectedVehicle)
-  const { myLocation } = useSelector(state => state.selectedCity)
-  const { selectedLocality, filterString, loading, loginData, totalTripHours, totalPrice, paymentDetails } = useSelector(state => state)
+  const selectedVehicle = useSelector(state => state.selectedVehicle)
+  const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = selectedVehicle
+  const { selectedLocality, filterString, loading, loginData, totalTripHours,  paymentDetails, totalTripDaysTime } = useSelector(state => state)
   const { startDate, endDate, startTime, endTime, finalCharge } = useSelector(state => state.filterString)
   const { paymentMethod } = useSelector((state) => state);
   const [licenceCheck, setLicenceCheck] = useState(false)
@@ -30,6 +30,19 @@ export default function Page() {
 
   useEffect(() => {
     setPricePerDayCal(true)
+    let checkData = localStorage.getItem("detailPage")
+    if(checkData){
+      let data = JSON.parse(checkData)
+      dispatch({type: "TOTALTRIPHOURS", payload: data.totalTripHours})
+      dispatch({type: "FILTERSTRING", payload: data.filterString})
+      dispatch({type: "SELECTEDVEHICLE", payload: data.selectedVehicle})
+      dispatch({type: "SELECTEDLOCALITY", payload: data.selectedLocality})
+      dispatch({type: "LOGINDATA", payload: data.loginData})  
+      dispatch({type: "PAYMENTDETAILS", payload: data.paymentDetails})
+      dispatch({type: "TOTALTRIPDAYSTIME", payload: data.totalTripDaysTime})
+    } else {
+      localStorage.setItem("detailPage", JSON.stringify({totalTripHours, filterString, selectedVehicle, loginData, selectedLocality, paymentDetails, totalTripDaysTime}))
+    }
     if (loginData) {
       let loginStr = loginData
       let str = "Hi " + loginStr.firstName + " " + "your booking for " + loginStr.email + " " + "is successfully completed for " + name + ". " + "Your booking id is " + _id
@@ -49,9 +62,9 @@ export default function Page() {
   const updatePaybleAmount = (e) => {
     const { checked } = e.target
     if (checked) {
-      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount + 50}})
+      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount + 50 * totalTripDaysTime.days}})
     } else {
-      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount - 50}})
+      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount - 50 * totalTripDaysTime.days}})
     }
   }
 
@@ -74,7 +87,6 @@ export default function Page() {
         vehicleNumber,
         bookingAmount: paymentDetails.payableAmount
       }
-      debugger
       const res = await postApi('/booking', obj)
       if (res) {
         const updatBookingObj = {
@@ -112,6 +124,7 @@ export default function Page() {
               if (res.status == 200) {
                 dispatch({ type: "LOGINDATA", payload: res.data })
               }
+              localStorage.removeItem("detailPage")
               router.push('/thankyou')
             });
         }
@@ -196,12 +209,12 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ display: "flex", marginTop: "10px", marginBottom: "10px" }}>
-                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration in <span style={{ fontWeight: "bold" }}>{totalTripHours} Hours</span></label>
+                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration is <span style={{ fontWeight: "bold" }}>{totalTripDaysTime.days} Days and {totalTripDaysTime.hours} Hours</span></label>
                   </div>
                   <div style={{ display: "flex" }}>
                     <RouteIcon />  <label htmlFor="name">Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>
                   </div>
-                  <p style={{ marginTop: "15px" }}>Vehicle number ss   <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p>
+                  {/* <p style={{ marginTop: "15px" }}>Vehicle number ss   <label htmlFor="name" style={{ fontWeight: "bold" }}>{vehicleNumber?.toUpperCase()}</label></p> */}
                 </div>
                 <div className='col-md-3 mobile-price-hide' style={{ textAlign: "right" }}>
                   <h5>₹ {finalCharge}</h5>
@@ -250,7 +263,7 @@ export default function Page() {
             </CardFooter>
           </Card>
 
-          <Card style={{ marginTop: "20px" }}>
+          {/* <Card style={{ marginTop: "20px" }}>
             <CardHeader style={{ display: "block" }}>
               <div style={{ background: "linear-gradient(90deg,#dc2b2f,#de4444,#de5858,#e87c7e,#e09b9c)", padding: "10px", color: "white", margin: "-16px" }}>
                 <h5 style={{ padding: "8px" }}>Promo Codes</h5>
@@ -259,7 +272,7 @@ export default function Page() {
             <CardBody>
               <input type='text' style={{ padding: "10px" }} className='form-control' placeholder='Enter promo code here' />
             </CardBody>
-          </Card>
+          </Card> */}
 
           <Card style={{ margin: "20px 0px" }}>
             <CardBody>

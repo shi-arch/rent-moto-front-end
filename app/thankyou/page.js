@@ -12,7 +12,7 @@ import { CitiesModal } from '../../utils/modal';
 
 export default function Page() {
   const dispatch = useDispatch()
-  const { paymentMethod } = useSelector((state) => state);
+  const { paymentMethod, paymentDetails } = useSelector((state) => state);
   const [amount, setTotalAmount] = useState(0)
   const { name, vehicleNumber, _id, pricePerday, url } = useSelector(state => state.selectedVehicle)
   const { contact, email, firstName, lastName } = useSelector(state => state.loginData)  
@@ -43,9 +43,9 @@ export default function Page() {
                 <div className='col-md-3'>
                   <span style={{ fontWeight: '700' }}>Vehicle Name</span><br /><span>{name}</span>
                 </div>
-                <div className='col-md-3'>
+                {/* <div className='col-md-3'>
                   <span style={{ fontWeight: '700' }}>Vehicle Number</span><br /><span>{vehicleNumber}</span>
-                </div>
+                </div> */}
                 <div className='col-md-3'>
                   <span style={{ fontWeight: '700' }}>Pickup Time</span><br /><span>{startDate + ", " + startTime}</span>
                 </div>
@@ -56,7 +56,7 @@ export default function Page() {
             </div>
             <div style={{ textAlign: 'center', margin: '20px 0px' }}><h5>Order Details</h5></div>
             <p><span style={{ fontWeight: '700' }}> Order Number</span> <label htmlFor="name" style={{ float: "right" }}>{_id}</label></p>
-            <p><span style={{ fontWeight: '700' }}> Total Booking Amount</span> <label htmlFor="name" style={{ float: "right" }}>{amount}</label></p>
+            <p><span style={{ fontWeight: '700' }}> Total Booking Amount</span> <label htmlFor="name" style={{ float: "right" }}>{paymentDetails.payableAmount}</label></p>
             <p><span style={{ fontWeight: '700' }}> Payment Method</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod}</label></p>
             <p><span style={{ fontWeight: '700' }}> Payment Status</span> <label htmlFor="name" style={{ float: "right" }}>{paymentMethod == "Online" ? "Completed" : "Pending"}</label></p>
             <p><span style={{ fontWeight: '700' }}> Location</span> <label htmlFor="name" style={{ float: "right" }}>{location + ", " + pickupLocation}</label></p>

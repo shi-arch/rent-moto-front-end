@@ -111,8 +111,7 @@ export const apiCall = async () => {
         const result = await postApi('/searchVehicle', filterString)
         if (result) {
             dispatch({ type: "VEHICLADATA", payload: result.data })
-        }
-        dispatch({ type: "LOADING", payload: false })
+        }        
     }
 }
 

@@ -120,7 +120,6 @@ export default function Page() {
           let bookingEndDate = moment(endDate).add(bookingEndHours, 'hours').add(bookingEndMinutes, 'minutes')
           bookingEndDate = new Date(bookingEndDate.format()).getTime()
           bookingStartDate = new Date(bookingStartDate.format()).getTime()
-          debugger 
           if (bookingStartDate > currentTime) {
             obj.upComingBookings.push(bookings[i])
           } else if ( bookingStartDate < currentTime && currentTime < bookingEndDate) {
@@ -152,10 +151,10 @@ export default function Page() {
               <Image src={booking} style={{ width: "36px" }} />
               <span className={tabName == "bookings" ? "selectedFont" : ""} style={{ marginLeft: "20px", color: "white", fontWeight: "bold", fontSize: "20px" }}>Bookings</span>
             </div>
-            <div onClick={() => setTabName("coins")} className={tabName == "coins" ? "selectedColor" : ""} style={{ border: "3.5px solid #e03546", borderRadius: "10px", padding: "10px", display: "flex", margin: "20px 0px", cursor: "pointer", background: "#e03546", }}>
+            {/* <div onClick={() => setTabName("coins")} className={tabName == "coins" ? "selectedColor" : ""} style={{ border: "3.5px solid #e03546", borderRadius: "10px", padding: "10px", display: "flex", margin: "20px 0px", cursor: "pointer", background: "#e03546", }}>
               <Image src={money} style={{ width: "36px" }} />
               <span className={tabName == "coins" ? "selectedFont" : ""} style={{ marginLeft: "20px", color: "white", fontWeight: "bold", fontSize: "20px" }}>Coins</span>
-            </div>
+            </div> */}
           </div>
           <div className='col-md-9'>
             {

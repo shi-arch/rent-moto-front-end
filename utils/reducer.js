@@ -41,11 +41,14 @@ const initialState = {
   prevFilterString: "",
   initialFilter: "",
   totalPrice: 0,
-  paymentDetails: {}
+  paymentDetails: {},
+  totalTripDaysTime: {}
 };
 
 const RootReducer = (state = initialState, action) => {
-  switch (action.type) {   
+  switch (action.type) {
+    case 'TOTALTRIPDAYSTIME':
+      return { ...state, totalTripDaysTime: action.payload }; 
     case 'PAYMENTDETAILS':
       return { ...state, paymentDetails: action.payload }; 
       case 'TOTALTRIPHOURS':

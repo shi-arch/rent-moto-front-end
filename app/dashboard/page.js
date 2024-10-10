@@ -27,15 +27,32 @@ export default function Page() {
   const triggerApi = useSelector(state => state.triggerApi)
   const { initialFilter, bookingDurationList, totalTripHours } = useSelector(state => state)
   const { startDate, endDate, startTime, endTime } = useSelector(state => state.filterString)
+  const [isFilter, setIsFilter] = useState(false)
 
   useEffect(() => {
     getLocalStream()
   }, [filterString])
 
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        dispatch({ type: "LOADING", payload: false })
+      }, 3000)
+    }
+  }, [loading])
+
+  useEffect(() => {
+    if (data && data.length) {
+      setIsFilter(true)
+      dispatch({ type: "LOADING", payload: false })
+    }
+  }, [data])
+
 
   useEffect(() => {
     (async () => {
-      await initialCall()
+      console.log(filterString)
+      //await initialCall()
       const response = await getApi("/getAllBookingDuration")
       if (response && response.data) {
         dispatch({ type: "BOOKINGDURATIONLIST", payload: response.data })
@@ -50,7 +67,9 @@ export default function Page() {
       let startDateHours = moment(startDate).add(startTimeHours, 'hours')
       let endDateHours = moment(endDate).add(endTimeHours, 'hours')
       var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
-      dispatch({ type: "TOTALTRIPHOURS", payload: Math.trunc(estHours / 3600000) })
+      let tripHrs = Math.trunc(estHours / 3600000)
+      dispatch({ type: "TOTALTRIPHOURS", payload: tripHrs })
+      dispatch({ type: "TOTALTRIPDAYSTIME", payload: { days: Math.trunc(tripHrs / 24), hours: tripHrs % 24 } })
     }
   }, [filterString])
 
@@ -67,7 +86,6 @@ export default function Page() {
     let str = filterString
     if (clear == 'clear') {
       str = { location: selectedCity.myLocation }
-      defaultPickupLocation
       dispatch({ type: "FILTERSTRING", payload: initialFilter })
       dispatch({ type: "DEFAULTBRAND", payload: defaultBrand })
       dispatch({ type: "DEFAULTPRICE", payload: defaultPrice })
@@ -88,13 +106,17 @@ export default function Page() {
     dispatch({ type: "FILTERSTRING", payload: filterString })
   }
 
+  const closeCityModal = () => {
+    dispatch({ type: "CITIESTMODAL", payload: false })
+  }
+
   return (
     <div className='container'>
       {
         loading ? <Loading /> : ""
       }
       <SubHeader />
-      < CitiesModal />
+      < CitiesModal closeCityModal={closeCityModal} />
       <div className='row'>
         <div className='col-md-3'>
           <div style={{ marginTop: "40px", textAlign: "center" }}>
@@ -242,7 +264,7 @@ export default function Page() {
                     <BikeCard key={index} {...card} finalCharge={finalCharge} />
                   </div>
                 </div>
-              }) : <h1 style={{ marginTop: "45px" }}> Sorry ... ! No vehicle found</h1>
+              }) : <h1 style={{ marginTop: "45px" }}>{isFilter ? 'Sorry ... ! No vehicle found' : ''}</h1>
             }
           </div>
         </div>

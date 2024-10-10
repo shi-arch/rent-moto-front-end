@@ -40,7 +40,7 @@ export const BikeCard = (props) => {
                 <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="Bike picture" />
                 <div style={{ marginTop: "14px", display: "flex" }}>
                     <div style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
-                    <div style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px" }}>₹{pricePerday}/day</div>
+                    <div style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px" }}>₹{finalCharge}/day</div>
                 </div>
                 <span style={{ marginTop: "14px", display: "flex" }}><img alt="Svg icon" src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
                 <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
