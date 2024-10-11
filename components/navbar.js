@@ -28,16 +28,9 @@ const menuItems = [
   "Log Out",
 ];
 export const NavigationBar = () => {
-  const router = useRouter()
-  const [test, setTest] = useState(false)
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  let [date, setDate] = useState(parseAbsoluteToLocal("2021-04-07T18:45:22Z"));
   const [isMenuOpen, setIsMenuOpen] = useState(false);  
   const dispatch = useDispatch();
-  const selectedCity = useSelector(state => state.selectedCity)
-  const error = useSelector(state => state.error)
-  const loginData = useSelector(state => state.loginData)
-  const isLoggedIn = useSelector(state => state.isLoggedIn)
+  const {selectedCity, loginData, isLoggedIn} = useSelector(state => state)
 
   useEffect(() => {
     document.getElementsByTagName("header")[0].style.maxWidth = "1414px"
@@ -72,7 +65,7 @@ export const NavigationBar = () => {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <div role="button" tabIndex="0" onClick={() => dispatch({ type: "CITIESTMODAL", payload: true })} style={{ border: '2.5px solid white', borderRadius: '10px', cursor: 'pointer', marginTop: '5px' }} className="w-full flex flex-col items-start gap-4">
+            <div role="button" tabIndex="0" onClick={() => {dispatch({ type: "CITIESTMODAL", payload: true })}} style={{ border: '2.5px solid white', borderRadius: '10px', cursor: 'pointer', marginTop: '5px' }} className="w-full flex flex-col items-start gap-4">
               <div style={{ display: 'flex', padding: '3px 0px 4px 16px', marginTop: '6px' }}>
                 <span style={{ marginBottom: "5px", fontWeight: "700", color: "white" }}>{selectedCity?.myLocation}</span>
                 <div style={{ padding: "0px 10px" }}>

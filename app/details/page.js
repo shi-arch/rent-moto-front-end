@@ -50,6 +50,11 @@ export default function Page() {
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("detailPage")
+    };
+  }, []); 
 
   const payNow = async () => {
     if (!paymentMethod) {

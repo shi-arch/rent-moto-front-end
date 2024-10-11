@@ -16,7 +16,6 @@ import swal from 'sweetalert';
 
 export const CitiesModal = (props) => {
   const dispatch = useDispatch();
-  const router = useRouter()
   const citiesModal = useSelector((state) => state.citiesModal);
   const citiesData = useSelector((state) => state.citiesData);
   const filterString = useSelector((state) => state.filterString);
@@ -26,6 +25,7 @@ export const CitiesModal = (props) => {
     filterString.location = o.myLocation
     filterString.pickupLocation = o.subLocation[1].label
     dispatch({ type: "FILTERSTRING", payload: filterString })
+    debugger
     dispatch({ type: "PICKUPLOCATION", payload: o.subLocation[1].label })
     dispatch({ type: "DEFAULTPICKUPLOCATION", payload: o.subLocation[1].label })
   }

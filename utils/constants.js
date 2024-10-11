@@ -98,6 +98,7 @@ export const dispatchFunction = async (obj) => {
 export const defaultVals = "Please select the nearby location"
 
 export const apiCall = async () => {
+    debugger
     const dispatch = store.dispatch
     const { filterString, prevFilterString } = store.getState()
     let callApi = true

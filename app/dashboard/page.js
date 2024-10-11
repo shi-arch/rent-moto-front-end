@@ -80,7 +80,7 @@ export default function Page() {
         dispatch({ type: "TRIGGERAPI", payload: true })
       }
     })()
-  }, [filterData])
+  }, [filterString.location])
 
   const filter = async (clear) => {
     let str = filterString
