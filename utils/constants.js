@@ -98,7 +98,6 @@ export const dispatchFunction = async (obj) => {
 export const defaultVals = "Please select the nearby location"
 
 export const apiCall = async () => {
-    debugger
     const dispatch = store.dispatch
     const { filterString, prevFilterString } = store.getState()
     let callApi = true
@@ -107,7 +106,7 @@ export const apiCall = async () => {
     } else {
         dispatch({type: "PREVFILTERSTRING", payload: JSON.stringify(filterString)})
     }
-    if (Object.keys(filterString).length && isValid() && callApi) {
+    if (Object.keys(filterString).length && isValid(filterString) && callApi) {
         dispatch({ type: "LOADING", payload: true })
         const result = await postApi('/searchVehicle', filterString)
         if (result) {
@@ -209,7 +208,8 @@ export const checkSoldOut = (BookingStartDateAndTime, BookingEndDateAndTime) => 
 
 export const isValid = () => {
     let isError = false
-    const { startTime, endTime, startDate, endDate } = store.getState()
+    const { startTime, endTime, startDate, endDate } = store.getState().filterString
+    debugger    
     const dispatch = store.dispatch
     if (!startDate) {
         isError = true

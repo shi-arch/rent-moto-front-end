@@ -53,8 +53,8 @@ export const BikeCard = (props) => {
                                 <button style={{ width: '100%', background: 'black' }} onClick={() => {
                                     dispatch({ type: "SELECTEDVEHICLE", payload: props })
                                     dispatch({ type: "TRIGGERAPI", payload: false })
-                                    let sgst = finalCharge*.14
-                                    dispatch({ type: "PAYMENTDETAILS", payload: {sgst, finalCharge, payableAmount: sgst*2 + JSON.parse(finalCharge)}})
+                                    let sgst = finalCharge * .14
+                                    dispatch({ type: "PAYMENTDETAILS", payload: { sgst, finalCharge, payableAmount: sgst * 2 + JSON.parse(finalCharge) } })
                                     dispatch({ type: "FILTERSTRING", payload: { ...filterString, finalCharge: JSON.parse(finalCharge) } })
                                     router.push('/details')
                                 }} type="submit" disabled={vehicleCount == 0 || error?.msg ? true : false || !selectedLocality} className="btn btn-success btn-block form-control">Rent Now</button> :
@@ -62,7 +62,7 @@ export const BikeCard = (props) => {
                         }
                     </div>
                 </div>
-                <p>Pickup at <span style={{ color: "red" }}>{selectedLocality ? selectedLocality : " ..."}</span></p>
+                <p>Pickup at <span style={{ color: "red" }}>{filterString.pickupLocation ? filterString.pickupLocation : " ..."}</span></p>
             </CardBody>
         </Card>
     )
@@ -232,11 +232,7 @@ const DropDown = () => {
 
 
 export const SubHeader = () => {
-    const dispatch = useDispatch();
-    const startDate = useSelector((state) => state.startDate);
-    const endDate = useSelector((state) => state.endDate);
-    const startTime = useSelector((state) => state.startTime);
-    const endTime = useSelector((state) => state.endTime);
+    const { startTime } = useSelector((state) => state.filterString);
     return (
         <div>
             {
@@ -248,13 +244,13 @@ export const SubHeader = () => {
                                     <DropDown />
                                 </div>
                                 <div className="col-md-3">
-                                    <DateSelection isBold={true} type={'STARTDATE'} />
+                                    <DatePickerComponent isBold={true} type={'STARTDATE'} />
                                 </div>
-                                <div className="col-md-2 mobile-bot-space">
+                                <div className="col-md-2">
                                     <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
                                 </div>
                                 <div className="col-md-3">
-                                    <DateSelection isBold={true} type={'ENDDATE'} />
+                                    <DatePickerComponent isBold={true} type={'ENDDATE'} />
                                 </div>
                                 <div className="col-md-2 mobile-bot-space">
                                     <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
@@ -286,7 +282,7 @@ export const TimerSelection = (props) => {
         }
     }, [filterString])
     return (
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mobile-bot-space">
             {defaultKeys.length ?
                 <Select
                     isInvalid={error && error.type == errType}
@@ -316,80 +312,55 @@ export const TimerSelection = (props) => {
 }
 
 export const DateSelection = (props) => {
-    const { type, isBold } = props
-    const [value, setValue] = React.useState();
-    const { startDate, endDate, filterString, error } = useSelector(state => state)
+    const { type } = props
+    const { filterString, error } = useSelector(state => state)
     const dispatch = useDispatch()
     const handleChange = (date) => {
         dispatch({ type: type, payload: date })
     }
     return (
         <>
-            <DatePicker
-                isInvalid={type == "ENDDATE" && error.type == "endDate"} errorMessage={type == "ENDDATE" && error.msg}
-                variant="bordered"
-                minValue={today(getLocalTimeZone())}
-                format="yyyy-MM-dd"
-                className="max-w-[284px]"
-                label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
-                value={type == "STARTDATE" ? parseDate(moment(filterString.startDate).format('YYYY-MM-DD')) : parseDate(moment(filterString.endDate).format('YYYY-MM-DD'))}
-                onChange={async (e) => {
-                    const valueStr = moment(await getDateTimeInput(type, e)).format('YYYY-MM-DD')
-                    isValid()
-                    dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: valueStr } })
-                }}
-            />
+            <div className="mobile-bot-space">
+                <DatePicker
+                    isInvalid={type == "ENDDATE" && error.type == "endDate"} errorMessage={type == "ENDDATE" && error.msg}
+                    variant="bordered"
+                    minValue={today(getLocalTimeZone())}
+                    format="yyyy-MM-dd"
+                    className="max-w-[284px]"
+                    label={type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}
+                    value={type == "STARTDATE" ? parseDate(moment(filterString.startDate).format('YYYY-MM-DD')) : parseDate(moment(filterString.endDate).format('YYYY-MM-DD'))}
+                    onChange={async (e) => {
+                        const valueStr = moment(await getDateTimeInput(type, e)).format('YYYY-MM-DD')
+                        isValid()
+                        dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: valueStr } })
+                    }}
+                />
+            </div>
+
         </>
     )
 }
 
-const CustomInput = ({ value, onClick, label, isBold }) => {
-    const styleObj = {
-        display: 'block', fontSize: '13px', fontWeight: '400', marginLeft: '12px', fontWeight: "bold", color: "#47475e"
-    }
-    if (isBold) {
-        styleObj.fontWeight = "normal";
-    }
-    return (
-        <div className="mobile-bot-space" style={{ cursor: 'pointer', padding: "5px 0px", border: "2px solid rgb(225 225 245)", borderRadius: "10px", boxShadow: "var(--bs-box-shadow-sm) !important" }}>
-            <span style={styleObj}>{label}</span>
-            <div role="button" tabIndex="0" onClick={onClick} className="custom-input d-flex align-items-center container" >
-                <button className="custom-input" style={{ fontWeight: '400', fontSize: '15px', color: "#797982" }}>
-                    {value}
-                </button>
-                <div style={{ marginLeft: 'auto' }}>
-                    <DateIcon />
-                </div>
-            </div>
-        </div>
-    )
-};
-
 export const DatePickerComponent = (props) => {
-    const { type, label, errType, defaultVal } = props
-    const error = useSelector(state => state.error)
-    const filterString = useSelector(state => state.filterString)
+    const { filterString, error } = useSelector(state => state)
     const dispatch = useDispatch()
+    const { type } = props
     useEffect(() => {
-        if (window.location.pathname !== '/') {
-            apiCall()
-        }
+        isValid()
     }, [filterString])
     return (
-        <DatePicker
-            isInvalid={error && error.type == errType}
-            errorMessage={error && error.msg}
-            minValue={today(getLocalTimeZone())}
-            //minValue={today(getLocalTimeZone())} 
-            defaultValue={defaultVal ? defaultVal : ""}
-            label={label}
-            onChange={async (e) => {
-                const res = await getDateTimeInput(type, e)
-                isValid()
-                dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: res } })
-            }}
-            variant={'bordered'} className="max-w-[284px]"
-        />
+        <div className="date-picker-css">
+            <span style={{ fontWeight: "700", fontSize: "13px" }}>{type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}</span>
+            <div style={{ display: "flex" }}>            
+                <span style={{ color: "#797982", fontWeight: "400", fontSize: "14px" }}>{type == "STARTDATE" ? moment(filterString.startDate).format('D MMM, YYYY') : moment(filterString.endDate).format('D MMM, YYYY')}</span>  
+                <input style={{ width: "20px", marginLeft: "auto", marginTop: "-22px" }}
+                    onChange={async (e) => {
+                        dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: e.target.value } })
+                    }}
+                min={moment(new Date()).format("YYYY-MM-DD")} type="date" />
+            </div>
+            <span style={{color: "#f44336", fontSize: "14px", fontWeight: "400", marginTop: "7px"}}>{type == "STARTDATE" && error && error.type == "startDate" ? error.msg : type == "ENDDATE" && error && error.type == "endDate" ? error.msg : ""}</span>
+        </div>
     )
 }
 

@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from "../utils/store";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
@@ -12,6 +12,8 @@ import Footer from "../components/footer";
 import { Providers } from "@/app/providers";
 import Header from "@/components/header";
 import "./layout.css"
+import { useEffect } from "react";
+import { useSelect } from "@nextui-org/select";
 
 export default function RootLayout({children}) {
   return (

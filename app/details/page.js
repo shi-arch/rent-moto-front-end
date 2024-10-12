@@ -29,6 +29,7 @@ export default function Page() {
   const [invoice, setInvoice] = useState("")
 
   useEffect(() => {
+    //localStorage.removeItem("dashboardPage")
     setPricePerDayCal(true)
     let checkData = localStorage.getItem("detailPage")
     if(checkData){
@@ -49,12 +50,6 @@ export default function Page() {
       setInvoice(str)
     }
   }, [])
-
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("detailPage")
-    };
-  }, []); 
 
   const payNow = async () => {
     if (!paymentMethod) {
@@ -185,7 +180,7 @@ export default function Page() {
                     <h5 className="mobile-price" style={{ marginLeft: "auto", display: "none" }}>₹ {finalCharge}</h5>
                   </div>
                   <p style={{ display: "flex", marginLeft: "-10px" }}><LocateIcon />  <label htmlFor="name">Pickup location</label></p>
-                  <p style={{ marginTop: "-15px", fontWeight: "bold", marginLeft: "40px", fontSize: "14px" }}>{selectedLocality}</p>
+                  <p style={{ marginTop: "-15px", fontWeight: "bold", marginLeft: "40px", fontSize: "14px" }}>{filterString.pickupLocation}</p>
                   <div style={{ display: "flex" }}>
                     <div style={{ maxWidth: "fit-content" }}>
                       <div style={{ display: "flex", marginBottom: "10px" }}>

@@ -25,7 +25,6 @@ export const CitiesModal = (props) => {
     filterString.location = o.myLocation
     filterString.pickupLocation = o.subLocation[1].label
     dispatch({ type: "FILTERSTRING", payload: filterString })
-    debugger
     dispatch({ type: "PICKUPLOCATION", payload: o.subLocation[1].label })
     dispatch({ type: "DEFAULTPICKUPLOCATION", payload: o.subLocation[1].label })
   }
@@ -497,7 +496,13 @@ export const SignUpModal = (props) => {
                     type="password"
                     isInvalid={error.type == "otp" ? true : false}
                     errorMessage={error.message}
-                    onChange={(e) => setOtp(e.target.value)}
+                    value={otp}
+                    onChange={(e) => {
+                      const {value} = e.target
+                      if(value.length < 7){
+                        setOtp(e.target.value)
+                      }                      
+                    }}
                     autoFocus
                     endContent={
                       <Button className="focus:outline-none" onClick={verifyOtp} type="button">Verify</Button>

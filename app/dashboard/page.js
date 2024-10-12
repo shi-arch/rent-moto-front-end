@@ -25,9 +25,22 @@ export default function Page() {
   const filterData = useSelector(state => state.filterData)
   const vehicleName = useSelector(state => state.vehicleName)
   const triggerApi = useSelector(state => state.triggerApi)
-  const { initialFilter, bookingDurationList, totalTripHours } = useSelector(state => state)
+  const { initialFilter, bookingDurationList, totalTripHours, selectedLocality } = useSelector(state => state)
   const { startDate, endDate, startTime, endTime } = useSelector(state => state.filterString)
   const [isFilter, setIsFilter] = useState(false)
+
+  useEffect(() => {
+    let checkData = localStorage.getItem("dashboardPage")
+    localStorage.removeItem("detailPage")
+    if(checkData){
+      let data = JSON.parse(checkData)
+      dispatch({type: "FILTERSTRING", payload: data.filterString})
+      dispatch({type: "SELECTEDCITY", payload: data.selectedCity})
+      dispatch({type: "SELECTEDLOCALITY", payload: data.selectedLocality})      
+    } else {
+      localStorage.setItem("dashboardPage", JSON.stringify({filterString, selectedCity, selectedLocality}))     
+    }
+  }, [])
 
   useEffect(() => {
     getLocalStream()

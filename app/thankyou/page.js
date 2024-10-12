@@ -28,6 +28,8 @@ export default function Page() {
       let price = pricePerday * 0.14
       let total = parseInt(pricePerday) + price * 2
       setTotalAmount(total.toFixed())
+      localStorage.removeItem("dashboardPage")
+      localStorage.removeItem("detailPage")
     })()
   }, [])
   return (

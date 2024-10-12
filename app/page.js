@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import { getApi } from './response/api';
 import { dispatchFunction, initialCall, isValid, TimeRangeArr } from "../utils/constants";
-import {getLocalStream} from '../app/constant'
+import { getLocalStream } from '../app/constant'
 import { parseDate } from "@internationalized/date";
 import { DatePickerComponent, DateSelection, Loading, TimerSelection } from "../components/commonComponents";
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -34,6 +34,8 @@ export default function Home() {
     (async () => {
       await initialCall()
     })()
+    localStorage.removeItem("dashboardPage")
+    localStorage.removeItem("detailPage")
   }, [])
   const search = async () => {
     if (isValid()) {
@@ -62,7 +64,7 @@ export default function Home() {
                 <div style={{ marginBottom: '30px' }} className="flex flex-col gap-4">
                   <div className='row'>
                     <div className='col-md-6'>
-                      <DateSelection type={'STARTDATE'} />
+                      <DatePickerComponent type={'STARTDATE'} />
                     </div>
                     <div className='col-md-6' style={{ alignContent: 'right' }}>
                       <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
@@ -70,7 +72,7 @@ export default function Home() {
                   </div>
                   <div className='row'>
                     <div className='col-md-6'>
-                      <DateSelection type={'ENDDATE'} />
+                      <DatePickerComponent type={'ENDDATE'} />
                     </div>
                     <div className='col-md-6' style={{ alignContent: 'right' }}>
                       <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
@@ -87,9 +89,10 @@ export default function Home() {
         </div>
         <div className="col-md-6">
           <img
+            className="imageCenter"
             src={selectedCity?.url}
             alt="Picture of the selected city"
-            style={{height: "100%"}}
+            style={{ height: "100%" }}
           />
         </div>
       </div>

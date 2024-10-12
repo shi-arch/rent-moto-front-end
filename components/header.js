@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
 import { AcmeLogo } from "./icons";
 import { Button } from "@nextui-org/button";
@@ -18,7 +18,7 @@ export default function Header() {
 
     const locate = () => {
         dispatch({ type: "CITIESTMODAL", payload: true })
-    }
+    }   
 
     const menuItems = [
         { label: "Home", route: "/" },
@@ -81,7 +81,7 @@ export default function Header() {
                         </div>
                     </NavbarItem>
                 </NavbarContent>
-                <NavbarMenu>
+                <NavbarMenu id="tttttttt" style={{ width: "fit-content", background: "black"}} >
                     {menuItems.map((item, index) => (
                         <NavbarMenuItem role="button" key={`${item}-${index}`}>
                             <Link
@@ -91,7 +91,7 @@ export default function Header() {
                                     }
                                 }}
                                 color={'danger'}
-                                className="w-full"
+                                //className="w-full"
                                 href={item?.route ? item?.route : "#"}
                                 size="lg"
                             >
