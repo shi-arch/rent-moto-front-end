@@ -238,21 +238,21 @@ export const SubHeader = () => {
             {
                 startTime ?
                     <div style={{ justifyContent: 'center', border: '1px solid #d3d3da', borderRadius: '10px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)', borderTop: 'none', borderTopLeftRadius: '0px', borderTopRightRadius: '0px' }}>
-                        <div style={{ padding: '24px' }} className="bot-space">
+                        <div style={{ padding: '24px' }} className="gap-4">
                             <div className="row">
                                 <div className="col-md-2">
                                     <DropDown />
                                 </div>
                                 <div className="col-md-3">
-                                    <DatePickerComponent isBold={true} type={'STARTDATE'} />
+                                    <DatePickerComponent isBold={true} classPass={"label-wt"} type={'STARTDATE'} />
                                 </div>
-                                <div className="col-md-2">
+                                <div className="col-md-2 time-space">
                                     <TimerSelection type={'STARTTIME'} errType={'startTime'} label={'Start Time'} />
                                 </div>
                                 <div className="col-md-3">
-                                    <DatePickerComponent isBold={true} type={'ENDDATE'} />
+                                    <DatePickerComponent isBold={true} classPass={"label-wt"} type={'ENDDATE'} />
                                 </div>
-                                <div className="col-md-2 mobile-bot-space">
+                                <div className="col-md-2">
                                     <TimerSelection type={'ENDTIME'} errType={'endTime'} label={'End Time'} />
                                 </div>
                             </div>
@@ -282,7 +282,7 @@ export const TimerSelection = (props) => {
         }
     }, [filterString])
     return (
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mobile-bot-space">
+        <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
             {defaultKeys.length ?
                 <Select
                     isInvalid={error && error.type == errType}
@@ -349,7 +349,7 @@ export const DatePickerComponent = (props) => {
         isValid()
     }, [filterString])
     return (
-        <div className="date-picker-css">
+        <div className="date-picker-css mobile-bot-space">
             <span style={{ fontWeight: "700", fontSize: "13px" }}>{type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}</span>
             <div style={{ display: "flex" }}>            
                 <span style={{ color: "#797982", fontWeight: "400", fontSize: "14px" }}>{type == "STARTDATE" ? moment(filterString.startDate).format('D MMM, YYYY') : moment(filterString.endDate).format('D MMM, YYYY')}</span>  

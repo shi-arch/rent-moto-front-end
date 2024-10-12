@@ -40,6 +40,12 @@
         padding-left: 25px!important;
         gap: 0px!important;
     }
+    .time-space{
+        margin-bottom: 20px;
+    }
+    .label-wt{
+        font-weight: 345;
+    }
     .max-w-\[400px\]{
         max-width: 100%;
     }
