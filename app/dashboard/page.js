@@ -77,12 +77,15 @@ export default function Page() {
     if (filterString.startTime) {
       let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
       let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()
+      let endTimeMins = new Date(moment(endTime, "hh:mm A")).getMinutes()
+      let startTimeMins = new Date(moment(startTime, "hh:mm A")).getMinutes()
       let startDateHours = moment(startDate).add(startTimeHours, 'hours')
       let endDateHours = moment(endDate).add(endTimeHours, 'hours')
       var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
       let tripHrs = Math.trunc(estHours / 3600000)
+      let minutes = startTimeMins && endTimeMins ? 0 : startTimeMins || endTimeMins
       dispatch({ type: "TOTALTRIPHOURS", payload: tripHrs })
-      dispatch({ type: "TOTALTRIPDAYSTIME", payload: { days: Math.trunc(tripHrs / 24), hours: tripHrs % 24 } })
+      dispatch({ type: "TOTALTRIPDAYSTIME", payload: { days: Math.trunc(tripHrs / 24), hours: tripHrs % 24, mins: minutes} })
     }
   }, [filterString])
 
@@ -110,13 +113,15 @@ export default function Page() {
   }
 
   const setFilter = async (name) => {
+    console.log()
+    let cloneData = JSON.parse(JSON.stringify(filterString))
     if (name == "Scooty") {
-      filterString.transmissionType = "non gear"
+      cloneData.transmissionType = "non gear"
     } else if (name == "Bike") {
-      filterString.transmissionType = "gear"
+      cloneData.transmissionType = "gear"
     }
     dispatch({ type: "FILTERDATA", payload: name })
-    dispatch({ type: "FILTERSTRING", payload: filterString })
+    dispatch({ type: "FILTERSTRING", payload: cloneData })
   }
 
   const closeCityModal = () => {

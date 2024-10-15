@@ -209,7 +209,6 @@ export const checkSoldOut = (BookingStartDateAndTime, BookingEndDateAndTime) => 
 export const isValid = () => {
     let isError = false
     const { startTime, endTime, startDate, endDate } = store.getState().filterString
-    debugger    
     const dispatch = store.dispatch
     if (!startDate) {
         isError = true

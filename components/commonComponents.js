@@ -23,7 +23,7 @@ import { parse } from "path";
 export const BikeCard = (props) => {
     const dispatch = useDispatch()
     const { name, url, pricePerday, vehicleCount, accessChargePerKm, finalCharge, bookingCount } = props
-    const { selectedLocality, error, filterString, totalTripHours } = useSelector((state) => state);
+    const { selectedLocality, error, filterString, totalTripDaysTime } = useSelector((state) => state);
     const router = useRouter()
     return (
         <Card className="max-w-[400px]">
@@ -40,10 +40,10 @@ export const BikeCard = (props) => {
                 <img src={url} style={{ width: "144px", height: "96px", margin: "0 auto" }} alt="Bike picture" />
                 <div style={{ marginTop: "14px", display: "flex" }}>
                     <div style={{ fontWeight: "700", fontSize: "12px", height: "34px" }}>{name.toUpperCase()}</div>
-                    <div style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px" }}>₹{finalCharge}/day</div>
+                    <div style={{ textAlign: "right", fontSize: "14px", marginLeft: "auto", paddingLeft: "8px" }}>₹{pricePerday}/day</div>
                 </div>
                 <span style={{ marginTop: "14px", display: "flex" }}><img alt="Svg icon" src="https://www.rentelo.in/assets/images/icons/excess-km.svg" style={{ marginRight: "5px" }} />100 kms limit</span>
-                <span style={{ fontSize: "13px" }}>(Extra charge ₹ {accessChargePerKm}/km + gst)</span>
+                <span style={{ fontSize: "13px" }}>(Extra charge ₹ {totalTripDaysTime && totalTripDaysTime.days ? JSON.parse(accessChargePerKm) * totalTripDaysTime.days : accessChargePerKm}/km + gst)</span>
                 <hr style={{ marginTop: "14px 0px" }} />
                 <div style={{ display: "flex" }}>
                     <div style={{ fontWeight: "700" }}>₹ {finalCharge}</div>

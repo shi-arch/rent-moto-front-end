@@ -19,30 +19,32 @@ export default function Page() {
   const router = useRouter()
   const selectedVehicle = useSelector(state => state.selectedVehicle)
   const { name, url, pricePerday, vehicleNumber, _id, vehicleCount, vehicleId, pickupLocation, location, brand, bookingCount, accessChargePerKm, distanceLimit, transmissionType } = selectedVehicle
-  const { selectedLocality, filterString, loading, loginData, totalTripHours,  paymentDetails, totalTripDaysTime } = useSelector(state => state)
+  const { selectedLocality, filterString, loading, loginData, totalTripHours, paymentDetails, totalTripDaysTime } = useSelector(state => state)
+  const { days, mins, hours } = totalTripDaysTime
   const { startDate, endDate, startTime, endTime, finalCharge } = useSelector(state => state.filterString)
-  const { paymentMethod } = useSelector((state) => state);
+  const { paymentMethod } = useSelector((state) => state);  
+  const [helmet, setHelmet] = useState(0)
   const [licenceCheck, setLicenceCheck] = useState(false)
   const [ageCheck, setAgeCheck] = useState(false)
-  const [hours, setHours] = useState(0)
   const [pricePerDayCal, setPricePerDayCal] = useState(false)
   const [invoice, setInvoice] = useState("")
 
   useEffect(() => {
     //localStorage.removeItem("dashboardPage")
+
     setPricePerDayCal(true)
     let checkData = localStorage.getItem("detailPage")
-    if(checkData){
+    if (checkData) {
       let data = JSON.parse(checkData)
-      dispatch({type: "TOTALTRIPHOURS", payload: data.totalTripHours})
-      dispatch({type: "FILTERSTRING", payload: data.filterString})
-      dispatch({type: "SELECTEDVEHICLE", payload: data.selectedVehicle})
-      dispatch({type: "SELECTEDLOCALITY", payload: data.selectedLocality})
-      dispatch({type: "LOGINDATA", payload: data.loginData})  
-      dispatch({type: "PAYMENTDETAILS", payload: data.paymentDetails})
-      dispatch({type: "TOTALTRIPDAYSTIME", payload: data.totalTripDaysTime})
+      dispatch({ type: "TOTALTRIPHOURS", payload: data.totalTripHours })
+      dispatch({ type: "FILTERSTRING", payload: data.filterString })
+      dispatch({ type: "SELECTEDVEHICLE", payload: data.selectedVehicle })
+      dispatch({ type: "SELECTEDLOCALITY", payload: data.selectedLocality })
+      dispatch({ type: "LOGINDATA", payload: data.loginData })
+      dispatch({ type: "PAYMENTDETAILS", payload: data.paymentDetails })
+      dispatch({ type: "TOTALTRIPDAYSTIME", payload: data.totalTripDaysTime })
     } else {
-      localStorage.setItem("detailPage", JSON.stringify({totalTripHours, filterString, selectedVehicle, loginData, selectedLocality, paymentDetails, totalTripDaysTime}))
+      localStorage.setItem("detailPage", JSON.stringify({ totalTripHours, filterString, selectedVehicle, loginData, selectedLocality, paymentDetails, totalTripDaysTime }))
     }
     if (loginData) {
       let loginStr = loginData
@@ -60,11 +62,14 @@ export default function Page() {
   }
 
   const updatePaybleAmount = (e) => {
-    const { checked } = e.target
-    if (checked) {
-      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount + 50 * totalTripDaysTime.days}})
+    const { checked } = e.target    
+    let helmetCharge = 50 * totalTripDaysTime.days
+    if (checked) {      
+      setHelmet(helmetCharge)
+      dispatch({ type: "PAYMENTDETAILS", payload: { ...paymentDetails, payableAmount: paymentDetails.payableAmount + helmetCharge } })
     } else {
-      dispatch({type: "PAYMENTDETAILS", payload: {...paymentDetails, payableAmount: paymentDetails.payableAmount - 50 * totalTripDaysTime.days}})
+      setHelmet(0)
+      dispatch({ type: "PAYMENTDETAILS", payload: { ...paymentDetails, payableAmount: paymentDetails.payableAmount - helmetCharge } })
     }
   }
 
@@ -90,7 +95,8 @@ export default function Page() {
       const res = await postApi('/booking', obj)
       if (res) {
         const updatBookingObj = {
-          bookingData: {BookingStartDateAndTime: obj.BookingStartDateAndTime, BookingEndDateAndTime: obj.BookingEndDateAndTime,
+          bookingData: {
+            BookingStartDateAndTime: obj.BookingStartDateAndTime, BookingEndDateAndTime: obj.BookingEndDateAndTime,
             bookingAmount: obj.bookingAmount, isBooked: true, vehicleNumber, vehicleId, pickupLocation, location, contact
           },
           vehicleData: {
@@ -98,12 +104,12 @@ export default function Page() {
           }
         }
         const getData = localStorage.getItem('loginData')
-        if(getData){
+        if (getData) {
           const data = JSON.parse(localStorage.getItem("loginData"))
           let cloneBooking = []
-          if(data && data.bookings){
+          if (data && data.bookings) {
             cloneBooking = [...data.bookings]
-          }          
+          }
           cloneBooking.push(updatBookingObj)
           data.bookings = cloneBooking
           localStorage.setItem("loginData", JSON.stringify(data))
@@ -209,7 +215,7 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ display: "flex", marginTop: "10px", marginBottom: "10px" }}>
-                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration is <span style={{ fontWeight: "bold" }}>{totalTripDaysTime.days} Days and {totalTripDaysTime.hours} Hours</span></label>
+                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration is <span style={{ fontWeight: "bold" }}>{days && days == 1 ? days + ' Day ' : days && days !== 1 ? ' Days ' : ''} {hours && hours == 1 ? hours + ' Hour ' : hours && hours !== 1 ? hours + ' Hours ' : ''} {mins && mins == 1 ? mins + ' Minute ' : mins && mins !== 1 ? mins + ' Minutes ' : ''}</span></label>
                   </div>
                   <div style={{ display: "flex" }}>
                     <RouteIcon />  <label htmlFor="name">Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>
@@ -220,6 +226,39 @@ export default function Page() {
                   <h5>₹ {finalCharge}</h5>
                 </div>
 
+              </div>
+            </CardBody>
+          </Card>
+          <Card style={{marginTop: "20px"}}>
+            <CardBody>
+              Rent Details
+              <div className='row'>
+                <div className='col-md-6'>
+                  <div style={{ display: "flex" }}>
+                    <input checked={true} className='checkboxSpace' type="checkbox" />
+                    <span>No questions asked refund (?)</span>
+                  </div>
+                </div>
+                <div className='col-md-6'>
+                  <div style={{ display: "flex" }}>
+                    <input checked={true} className='checkboxSpace' type="checkbox" />
+                    <span>Extra ₹3/km + GST (?)</span>
+                  </div>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-md-6'>
+                  <div style={{ display: "flex" }}>
+                    <input checked={true} className='checkboxSpace' type="checkbox" />
+                    <span>Zero deposite (?)</span>
+                  </div>
+                </div>
+                <div className='col-md-6'>
+                  <div style={{ display: "flex" }}>
+                    <input checked={true} className='checkboxSpace' type="checkbox" />
+                    <span>1 complementary helmet (?)</span>
+                  </div>
+                </div>
               </div>
             </CardBody>
           </Card>
@@ -237,6 +276,9 @@ export default function Page() {
             <CardBody>
               <p>Vehicle Rental Cost (per day) <label htmlFor="name" style={{ float: "right" }}>₹ {pricePerday}</label></p>
               <p>Total Booking Amount <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails.finalCharge}</label></p>
+              {
+                helmet ? <p>Pillion Helmet <label htmlFor="name" style={{ float: "right" }}>₹ {helmet}</label></p> : ""
+              }              
               <p>CGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails?.sgst?.toFixed()}</label></p>
               <p>SGST (14% applied) <label htmlFor="name" style={{ float: "right" }}>₹ {paymentDetails?.sgst?.toFixed()}</label></p>
             </CardBody>
