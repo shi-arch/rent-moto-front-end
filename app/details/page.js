@@ -30,8 +30,6 @@ export default function Page() {
   const [invoice, setInvoice] = useState("")
 
   useEffect(() => {
-    //localStorage.removeItem("dashboardPage")
-
     setPricePerDayCal(true)
     let checkData = localStorage.getItem("detailPage")
     if (checkData) {
@@ -215,7 +213,7 @@ export default function Page() {
                     </div>
                   </div>
                   <div style={{ display: "flex", marginTop: "10px", marginBottom: "10px" }}>
-                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration is <span style={{ fontWeight: "bold" }}>{days && days == 1 ? days + ' Day ' : days && days !== 1 ? ' Days ' : ''} {hours && hours == 1 ? hours + ' Hour ' : hours && hours !== 1 ? hours + ' Hours ' : ''} {mins && mins == 1 ? mins + ' Minute ' : mins && mins !== 1 ? mins + ' Minutes ' : ''}</span></label>
+                    <ClockIcon />  <label htmlFor="name" style={{ marginLeft: "15px" }}>Total booking duration is <span style={{ fontWeight: "bold" }}>{days && days == 1 ? days + ' Day ' : days && days !== 1 ? days + ' Days ' : ''} {hours && hours == 1 ? hours + ' Hour ' : hours && hours !== 1 ? hours + ' Hours ' : ''} {mins && mins == 1 ? mins + ' Minute ' : mins && mins !== 1 ? mins + ' Minutes ' : ''}</span></label>
                   </div>
                   <div style={{ display: "flex" }}>
                     <RouteIcon />  <label htmlFor="name">Free for <span style={{ fontWeight: "bold" }}>100 kms</span></label>

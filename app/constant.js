@@ -4,7 +4,8 @@ import moment from 'moment'
 
 export const getLocalStream = async () => {
   const dispatch = store.dispatch
-  const { startTime, endTime, startDate, endDate } = store.getState()
+  const { filterString } = store.getState()
+  const {startTime, endTime, startDate, endDate} = filterString
   if (startTime && endTime && startDate && endDate) {
     let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
     let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
 import { AcmeLogo } from "./icons";
 import { Button } from "@nextui-org/button";
@@ -12,9 +12,21 @@ import { LoginModal, OtpModal, SignUpModal } from "@/utils/modal";
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const selectedCity = useSelector(state => state.selectedCity)
-    const loginData = useSelector(state => state.loginData)
     const isLoggedIn = useSelector(state => state.isLoggedIn)
+    const loginData = useSelector(state => state.loginData)
+    //const [loginData, setLoginData] = useState("")
     const dispatch = useDispatch();
+
+    useEffect(() => {        
+        if(!loginData){
+            let localData = localStorage.getItem("loginData")
+            let isLoggedIn = localStorage.getItem("isLoggedIn")
+            if(localData){
+                dispatch({type: "LOGINDATA", payload: JSON.parse(localData)})
+                dispatch({type: "ISLOGGEDIN", payload: JSON.parse(isLoggedIn)})
+            }
+        }
+    }, [])
 
     const locate = () => {
         dispatch({ type: "CITIESTMODAL", payload: true })
@@ -70,7 +82,7 @@ export default function Header() {
                     <NavbarItem>
                         <div style={{ marginTop: "6px" }}>
                             {
-                                loginData && isLoggedIn ? <ProfileDrop />
+                                isLoggedIn && loginData ? <ProfileDrop loginData={loginData} />
                                     : <Button onClick={() => {
                                         dispatch({ type: "ERROR", payload: "" })
                                         dispatch({ type: "SHOWLOGINMODEL", payload: true })

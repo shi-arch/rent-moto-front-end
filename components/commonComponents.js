@@ -141,10 +141,9 @@ export const Loading = () => {
     );
 };
 
-export const ProfileDrop = () => {
+export const ProfileDrop = (loginData) => {
     const dispatch = useDispatch()
     const router = useRouter()
-    const loginData = useSelector(state => state.loginData)
     return (
         <Dropdown style={{ padding: '0px', width: '100px' }}>
             <DropdownTrigger>
@@ -156,17 +155,18 @@ export const ProfileDrop = () => {
                 >
                     <div style={{ cursor: 'pointer', display: 'flex', padding: '3px 0px 4px 16px', marginTop: "8px" }}>
                         <UserIcon />
-                        <span style={{ marginLeft: "8px", color: "white", fontWeight: "bold", marginTop: "6px" }}>Hi, {loginData?.firstName}</span>
+                        <span style={{ marginLeft: "8px", color: "white", fontWeight: "bold", marginTop: "6px" }}>Hi, {loginData.loginData?.firstName}</span>
                     </div>
                 </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions" disabledKeys={["name"]}>
-                <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData?.firstName + " " + loginData?.lastName}</span></DropdownItem>
+                <DropdownItem key="name"><span style={{ fontWeight: "bold" }}>{loginData.loginData?.firstName + " " + loginData.loginData?.lastName}</span></DropdownItem>
                 <DropdownItem onClick={() => {
                     router.push('/profile')
                 }} startContent={<ProfileBlackIcon />} key="copy">Profile</DropdownItem>
                 <DropdownItem onClick={() => {
                     localStorage.removeItem('loginData')
+                    localStorage.removeItem('isLoggedIn')
                     dispatch({ type: "USERDETAILS", payload: "" })
                     dispatch({ type: "ISLOGGEDIN", payload: false })
                     dispatch({ type: "LOGINDATA", payload: "" })
@@ -351,15 +351,15 @@ export const DatePickerComponent = (props) => {
     return (
         <div className="date-picker-css mobile-bot-space">
             <span style={{ fontWeight: "700", fontSize: "13px" }}>{type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}</span>
-            <div style={{ display: "flex" }}>            
-                <span style={{ color: "#797982", fontWeight: "400", fontSize: "14px" }}>{type == "STARTDATE" ? moment(filterString.startDate).format('D MMM, YYYY') : moment(filterString.endDate).format('D MMM, YYYY')}</span>  
+            <div style={{ display: "flex" }}>
+                <span style={{ color: "#797982", fontWeight: "400", fontSize: "14px" }}>{type == "STARTDATE" ? moment(filterString.startDate).format('D MMM, YYYY') : moment(filterString.endDate).format('D MMM, YYYY')}</span>
                 <input style={{ width: "20px", marginLeft: "auto", marginTop: "-22px" }}
                     onChange={async (e) => {
                         dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: e.target.value } })
                     }}
-                min={moment(new Date()).format("YYYY-MM-DD")} type="date" />
+                    min={moment(new Date()).format("YYYY-MM-DD")} type="date" />
             </div>
-            <span style={{color: "#f44336", fontSize: "14px", fontWeight: "400", marginTop: "7px"}}>{type == "STARTDATE" && error && error.type == "startDate" ? error.msg : type == "ENDDATE" && error && error.type == "endDate" ? error.msg : ""}</span>
+            <span style={{ color: "#f44336", fontSize: "14px", fontWeight: "400", marginTop: "7px" }}>{type == "STARTDATE" && error && error.type == "startDate" ? error.msg : type == "ENDDATE" && error && error.type == "endDate" ? error.msg : ""}</span>
         </div>
     )
 }

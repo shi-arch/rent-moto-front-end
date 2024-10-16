@@ -18,7 +18,8 @@ import { DateIcon, LockIcon } from "../utils/icons";
 
 export default function Home() {
   const dispatch = useDispatch();
-  const router = useRouter()
+  const router = useRouter()  
+  const {totalTripDaysTime} = useSelector(state => state)
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handleChange = date => {
@@ -45,6 +46,21 @@ export default function Home() {
       router.push('/dashboard')
     }
   }
+  // useEffect(() => {
+  //   if (filterString.startTime) {
+  //     let startTimeHours = new Date(moment(startTime, "hh:mm A")).getHours()
+  //     let endTimeHours = new Date(moment(endTime, "hh:mm A")).getHours()
+  //     let endTimeMins = new Date(moment(endTime, "hh:mm A")).getMinutes()
+  //     let startTimeMins = new Date(moment(startTime, "hh:mm A")).getMinutes()
+  //     let startDateHours = moment(startDate).add(startTimeHours, 'hours')
+  //     let endDateHours = moment(endDate).add(endTimeHours, 'hours')
+  //     var estHours = (endTimeHours - startTimeHours) + (endDateHours - startDateHours);
+  //     let tripHrs = Math.trunc(estHours / 3600000)
+  //     let minutes = startTimeMins && endTimeMins ? 0 : startTimeMins || endTimeMins
+  //     dispatch({ type: "TOTALTRIPHOURS", payload: tripHrs })
+  //     dispatch({ type: "TOTALTRIPDAYSTIME", payload: { days: Math.trunc(tripHrs / 24), hours: tripHrs % 24, mins: minutes} })
+  //   }
+  // }, [filterString])
   return (
     <>
       <div style={{ width: "100%" }} className="row">

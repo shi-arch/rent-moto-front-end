@@ -196,6 +196,7 @@ export const LoginModal = (props) => {
   }
   const verify = async () => {
     if (isValid()) {
+      dispatch({type: "LOADING", payload: true})
       const res = await postApi('/getUsersByContact', { contact: parseInt(userDetails.contact) })
       if (res.status == 200) {
         dispatch({ type: "LOGINDATA", payload: res.data })
@@ -205,6 +206,7 @@ export const LoginModal = (props) => {
         dispatch({ type: "SHOWLOGINMODEL", payload: false })
         dispatch({ type: "SHOWSIGNUPMODAL", payload: true })
       }
+      dispatch({type: "LOADING", payload: false})
     }
   }
   return (
@@ -499,7 +501,8 @@ export const SignUpModal = (props) => {
                     value={otp}
                     onChange={(e) => {
                       const {value} = e.target
-                      if(value.length < 7){
+                      //debugger
+                      if(value.length < 7 && !isNaN(value)){
                         setOtp(e.target.value)
                       }                      
                     }}

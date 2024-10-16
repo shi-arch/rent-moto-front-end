@@ -224,12 +224,15 @@ export default function Page() {
               <CardHeader className="flex gap-3">Choose Brand</CardHeader>
               <CardBody>
                 <select style={{ height: "57px" }} className="form-select" defaultValue={defaultBrand} onChange={async (e) => {
-                  const o = e.target.value
+                  const {value} = e.target
+                  let o = value
+                  if(value == "Please choose brand"){
+                    o = ""
+                  }
                   dispatch({ type: "SELECTEDKEYS", payload: o })
                   const filter = { ...filterString, brand: o }
                   dispatch({ type: "FILTERSTRING", payload: filter })
                   dispatch({ type: "DEFAULTBRAND", payload: o })
-                  //await vehicleData(filter)
                 }} name="cars" id="brands">
                   {
                     brands.map((o) => (
