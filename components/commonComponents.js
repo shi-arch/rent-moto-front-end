@@ -148,10 +148,7 @@ export const ProfileDrop = (loginData) => {
         <Dropdown style={{ padding: '0px', width: '100px' }}>
             <DropdownTrigger>
                 <Button
-                    variant="normal"
-                    onClick={() => {
-                        document.getElementsByClassName("w-full flex flex-col gap-0.5 outline-none")[0].style.padding = "0px"
-                    }}
+                    variant="normal"                    
                 >
                     <div style={{ cursor: 'pointer', display: 'flex', padding: '3px 0px 4px 16px', marginTop: "8px" }}>
                         <UserIcon />
@@ -353,6 +350,7 @@ export const DatePickerComponent = (props) => {
             <span style={{ fontWeight: "700", fontSize: "13px" }}>{type == "STARTDATE" ? 'Pickup Date' : 'Return Date'}</span>
             <div style={{ display: "flex" }}>
                 <span style={{ color: "#797982", fontWeight: "400", fontSize: "14px" }}>{type == "STARTDATE" ? moment(filterString.startDate).format('D MMM, YYYY') : moment(filterString.endDate).format('D MMM, YYYY')}</span>
+                <div style={{display: 'none'}} className="mobile-date"><DateIcon /></div>
                 <input style={{ width: "20px", marginLeft: "auto", marginTop: "-22px" }}
                     onChange={async (e) => {
                         dispatch({ type: "FILTERSTRING", payload: { ...filterString, [type == "STARTDATE" ? "startDate" : "endDate"]: e.target.value } })

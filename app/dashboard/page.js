@@ -136,7 +136,7 @@ export default function Page() {
       <SubHeader />
       < CitiesModal closeCityModal={closeCityModal} />
       <div className='row'>
-        <div className='col-md-3'>
+        <div className='col-md-3 hide'>
           <div style={{ marginTop: "40px", textAlign: "center" }}>
             <h4 style={{ marginBottom: "20px" }}>FILTER</h4>
             <Card className="max-w-[400px]" >
@@ -163,9 +163,6 @@ export default function Page() {
               </CardBody>
             </Card>
             <Card className="max-w-[400px]" style={{ marginTop: "20px" }}>
-              <CardHeader className="flex gap-3">
-                <h5 style={{ fontSize: "19px" }}>Filters</h5>
-              </CardHeader>
               <CardBody>
                 <h5>BOOKING DURATION</h5>
                 {
@@ -261,7 +258,6 @@ export default function Page() {
             </Card>
             <button style={{ width: '100%', margin: "20px 0px", background: "#e03546", border: "none" }} onClick={() => filter('clear')} type="submit" className="btn btn-success btn-block form-control">Reset filter</button>
           </div>
-
         </div>
         <div className='col-md-9'>
           <div className='row' style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -287,6 +283,129 @@ export default function Page() {
                 </div>
               }) : <h1 style={{ marginTop: "45px" }}>{isFilter ? 'Sorry ... ! No vehicle found' : ''}</h1>
             }
+          </div>
+        </div>
+        <div style={{display: 'none'}} className='col-md-3 mobile-filter'>
+          <div style={{ marginTop: "40px", textAlign: "center" }}>
+            <h4 style={{ marginBottom: "20px" }}>FILTER</h4>
+            <Card className="max-w-[400px]" >
+              <CardHeader className="flex gap-3">Categories</CardHeader>
+              <CardBody>
+                <div className='row'>
+                  {
+                    categories.map((ele) => (
+                      <div className='col-md-6 col-sm-6 col-xs-6' key={ele.name} style={{ marginBottom: "15px" }}>
+                        <div tabIndex="0" role="button" onClick={() => setFilter(ele.name)} className={filterData == ele.name ? "filter" : ""} style={{ border: '1px solid #d3d3da', borderRadius: "10px", textAlign: "center", padding: "22px 0px", cursor: "pointer", height: "100px" }}>
+                          <img style={ele.name == "Scooty" ? { width: "60px", margin: "0px auto" } : { width: "80px", margin: "0px auto" }} src={ele.url} alt="Picture of my category" />
+                          <span style={{ fontSize: "14px", fontWeight: "700" }}>{ele.name}</span>
+                        </div>
+                      </div>
+                    ))
+                  }
+                  <div>
+                    <button className="form-controll" onClick={() => {
+                      const filter = { ...filterString, mostBooked: true }
+                      dispatch({ type: "FILTERSTRING", payload: filter })
+                    }} style={{ width: "100%", background: "black", color: "white", padding: "10px 0px", borderRadius: "5px" }}>Most booked vehicles</button>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+            <Card className="max-w-[400px]" style={{ marginTop: "20px" }}>
+              <CardBody>
+                <h5>BOOKING DURATION</h5>
+                {
+                  bookingDurationList && bookingDurationList.length ? bookingDurationList.map((ele) => (
+                    <BookingDurationComp isChecked={false} onChecked={() => {
+                      console.log(filterString)
+                      const { startTime, startDate } = filterString
+                      let bookingStartHours = new Date(moment(startTime, "hh:mm A")).getHours()
+                      let bookingStartMinutes = new Date(moment(startTime, "hh:mm A")).getMinutes()
+                      let bookingStartDate = ""
+                      let amount = 0
+                      if (ele.bookingDuration.label == "Weekly Package") {
+                        bookingStartDate = moment(startDate).add(7, 'days').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                        amount = 12000
+                      } else if (ele.bookingDuration.label == "3 Hours Package") {
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 3, 'hours').add(bookingStartMinutes, 'minutes')
+                        amount = 6000
+                      } else if (ele.bookingDuration.label == "6 Hours Package") {
+                        amount = 8000
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 6, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "Half Day Package") {
+                        amount = 9000
+                        bookingStartDate = moment(startDate).add(bookingStartHours + 12, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "Daily Package") {
+                        amount = 10000
+                        bookingStartDate = moment(startDate).add(1, 'day').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "15 Days Package") {
+                        amount = 16000
+                        bookingStartDate = moment(startDate).add(15, 'days').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "Monthly Package") {
+                        amount = 30000
+                        bookingStartDate = moment(startDate).add(1, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "3 Months Package") {
+                        amount = 90000
+                        bookingStartDate = moment(startDate).add(3, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "6 Months Package") {
+                        amount = 100000
+                        bookingStartDate = moment(startDate).add(6, 'month').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      } else if (ele.bookingDuration.label == "Yearly Package") {
+                        amount = 170000
+                        bookingStartDate = moment(startDate).add(1, 'year').add(bookingStartHours, 'hours').add(bookingStartMinutes, 'minutes')
+                      }
+                      dispatch({
+                        type: "FILTERSTRING", payload: {
+                          ...filterString, bookingDuration: ele.bookingDuration.label, selectedAmount: amount,
+                          endDate: moment(bookingStartDate).format('MM/DD/YYYY'), endTime: moment(bookingStartDate).format('hh:mm A')
+                        }
+                      })
+                      //dispatch({type: "FILTERSTRING", payload: ele.bookingDuration})                      
+                    }} label={ele.bookingDuration.label} />
+                  )) : ""
+                }
+              </CardBody>
+            </Card>
+            <Card className="max-w-[400px]" style={{ marginTop: "20px" }}>
+              <CardHeader className="flex gap-3">Choose Brand</CardHeader>
+              <CardBody>
+                <select style={{ height: "57px" }} className="form-select" defaultValue={defaultBrand} onChange={async (e) => {
+                  const {value} = e.target
+                  let o = value
+                  if(value == "Please choose brand"){
+                    o = ""
+                  }
+                  dispatch({ type: "SELECTEDKEYS", payload: o })
+                  const filter = { ...filterString, brand: o }
+                  dispatch({ type: "FILTERSTRING", payload: filter })
+                  dispatch({ type: "DEFAULTBRAND", payload: o })
+                }} name="cars" id="brands">
+                  {
+                    brands.map((o) => (
+                      <option key={o.label} value={o.key}>{o.label}</option>
+                    ))
+                  }
+                </select>
+              </CardBody>
+            </Card>
+            <Card className="max-w-[400px]" style={{ marginTop: "20px" }}>
+              <CardHeader className="flex gap-3">Price sort</CardHeader>
+              <CardBody>
+                <select style={{ height: "57px" }} className="form-select" defaultValue={defaultPrice} onChange={async (e) => {
+                  const o = e.target.value
+                  dispatch({ type: "SELECTEDKEYS", payload: o })
+                  const filter = { ...filterString, sort: o }
+                  dispatch({ type: "FILTERSTRING", payload: filter })
+                }}>
+                  {
+                    sortArr.map((o) => (
+                      <option key={o.label} value={o.key}>{o.label}</option>
+                    ))
+                  }
+                </select>
+              </CardBody>
+            </Card>
+            <button style={{ width: '100%', margin: "20px 0px", background: "#e03546", border: "none" }} onClick={() => filter('clear')} type="submit" className="btn btn-success btn-block form-control">Reset filter</button>
           </div>
         </div>
       </div>

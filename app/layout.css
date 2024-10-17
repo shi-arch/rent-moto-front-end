@@ -32,9 +32,27 @@
     border: 2.3px solid #a1a1aa;
 }
 
-
-
+input[type="date"] {
+    background-color: white;
+    -webkit-appearance : none;
+}
+.paddingZero{
+    padding: 0px!important;
+}
 @media only screen and (max-width: 600px) {
+    .mobile-filter{
+        display: block!important;
+    }
+    .dddd{
+        margin-left: -18px!important;
+    }
+    .hide{
+        display: none;
+    }
+    .mobile-date{
+        /* margin-left: auto;
+        display: block!important; */
+    }
     header{
         /* background-color: #e03546; */
         padding-left: 25px!important;

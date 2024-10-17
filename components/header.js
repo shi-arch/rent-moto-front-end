@@ -25,8 +25,12 @@ export default function Header() {
                 dispatch({type: "LOGINDATA", payload: JSON.parse(localData)})
                 dispatch({type: "ISLOGGEDIN", payload: JSON.parse(isLoggedIn)})
             }
+        } else {
+            let element = document.getElementsByClassName("group relative inline-flex items-center")[0]
+            element.classList.add("paddingZero");
         }
-    }, [])
+               
+    }, [loginData])
 
     const locate = () => {
         dispatch({ type: "CITIESTMODAL", payload: true })
@@ -44,12 +48,12 @@ export default function Header() {
             <LoginModal onOpenChange={() => dispatch({ type: "SHOWLOGINMODEL", payload: false })} />
             <SignUpModal onOpenChange={() => dispatch({ type: "SHOWSIGNUPMODAL", payload: false })} />
             <Navbar style={{ color: "white", padding: "0px" }} className="test" onMenuOpenChange={setIsMenuOpen}>
-                <NavbarContent>
+                <NavbarContent style={{paddingLeft: "0px"}}>
                     <NavbarMenuToggle
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                         className="sm:hidden"
                     />
-                    <NavbarBrand style={{ marginTop: "10px" }}>
+                    <NavbarBrand className="dddd" style={{ marginTop: "10px" }}>
                         <Link style={{ color: "white", fontWeight: "bold" }} color="foreground" href="/" aria-current="page">
                             <AcmeLogo />
                             <p className="font-bold text-inherit" style={{ marginTop: "16px" }}>RENTO</p>
